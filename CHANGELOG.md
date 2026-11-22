@@ -3,6 +3,99 @@
 All notable changes to Shortcut Hint Overlay are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.9.2] - 2026-11-23
+
+### Fixed
+- Docs and Slides STILL did not open the overlay inside a document, even
+  with 0.1.9 loaded and the tab refreshed. Root cause, found by checking
+  Chrome's rules: Docs/Slides catch keys in a hidden **about:blank**
+  iframe (`.docs-texteventtarget-iframe`), and Chrome never injects
+  content scripts into about:blank frames without
+  `"match_origin_as_fallback"` in the manifest — so 0.1.9's forwarder
+  code never ran inside that frame at all. The forwarder approach is
+  gone. The top frame now hooks same-origin iframes directly
+  (`hookIframe()` in content.js): listeners on the iframe's *window*
+  (which survives Docs rewriting the iframe's document with
+  document.write), a MutationObserver for iframes added later (Slides
+  adds its editor iframe dynamically; Docs has it at load), recursive
+  handling of nested iframes, and re-hooking on iframe load. A
+  same-origin iframe instance is now inert (it attaches nothing and
+  builds no overlay); a cross-origin iframe still runs standalone, as
+  before. Covered by 6 new tests in `tests/iframe-hook.test.js` and
+  `tests/iframe-inert.test.js` (iframe at load, iframe added later,
+  cross-origin skipped, click in iframe closes a locked overlay); the
+  old forwarding tests are removed.
+
+## [0.1.9.1] - 2026-11-23
+
+### Fixed
+- Spreadsheet showed Docs shortcuts ("DOCS.GOOGLE.COM" with Insert comment
+  / Dictionary / Word count) instead of its own Sheets shortcuts. Docs,
+  Sheets and Slides documents ALL live on docs.google.com and differ only
+  by path (/document/, /spreadsheets/, /presentation/) — the extension
+  only looked at the hostname, so every Workspace document looked like
+  Docs. Site lookup is now path-aware (`resolveSiteKey()` in content.js
+  and popup.js): /spreadsheets/ → sheets.google.com, /presentation/ →
+  slides.google.com, /document/ → docs.google.com. This also fixes the
+  popup and the per-site disable toggle, which had the same hostname-only
+  bug (disabling "Sheets" previously did nothing, since no real Sheets
+  page has that hostname). Covered by 2 new tests in
+  `tests/workspace-routing.test.js` (spreadsheet path shows Sheets
+  shortcuts and no Docs ones, document path shows Docs and no Sheets).
+
+> Versioning note: 0.1.9.1 is the testing patch line off v0.1.9 (iframe
+> fix). While the 5 manual test sites (Docs, Sheets, Wikipedia, Reddit,
+> Spotify web player) are being checked, further bug fixes ship as
+> 0.1.9.2, 0.1.9.3, … — the version only moves on once testing is done.
+
+## [0.1.9] - 2026-11-23
+
+### Fixed
+- Overlay never opened inside a Google Docs document (it worked on the
+  Docs homepage). Google Docs captures keystrokes in a hidden same-origin
+  iframe, so the top frame never saw the Ctrl hold. The manifest now sets
+  `"all_frames": true`, and a same-origin iframe acts as a forwarder: it
+  sends its key/click events to the top frame via postMessage (same-origin
+  only — foreign messages are ignored), which owns the overlay. Cross-
+  origin iframes and the top frame run standalone as before. Site lookup
+  uses the top frame's hostname when readable, so the editor iframe still
+  resolves to docs.google.com. A forwarder builds no overlay and loads no
+  DB. Covered by 3 new tests in `tests/iframe-forward.test.js` and
+  `tests/iframe-receive.test.js` (forwarding, no own overlay, foreign
+  messages ignored, forwarded hold opens the overlay with Docs shortcuts,
+  forwarded release hides it).
+
+## [0.1.8] - 2026-11-23
+
+### Fixed
+- "Failed to load shortcuts-db: TypeError: Failed to fetch" on the
+  chrome://extensions Errors page (seen on accounts.google.com). The DB is
+  68 KB and valid — the failure was the page's strict Content-Security-
+  Policy blocking the content script's direct fetch, a pre-existing issue
+  since v0.1.0, not caused by the bigger database. The content script now
+  asks the background service worker for the DB via messaging (the worker's
+  fetch is not subject to any page's CSP), with a direct fetch as fallback
+  when messaging is unavailable. The fallback no longer logs an error when
+  it fails — the overlay still works with global + auto-detected shortcuts
+  — so strict-CSP pages stay silent. Covered by 2 new tests in
+  `tests/background-db.test.js` (worker returns the 105-site DB, caches it,
+  ignores unknown messages) and the search tests now exercise the messaging
+  path.
+
+## [0.1.7] - 2026-11-23
+
+### Added
+- Database expanded from 243 to 842 shortcuts across the same 105 sites:
+  every site now has its 10 most-used shortcuts where 10 genuinely exist
+  (74 sites are at 10+). 599 new entries, researched site by site against
+  each site's own shortcut documentation, Windows keys only, no duplicates.
+  31 sites are still under 10 — mostly sites with no documented shortcut
+  set of their own (e.g. IMDb, Goodreads, Amazon, eBay, Dribbble), where the
+  researchers found nothing verified to add rather than inventing entries.
+  Two "X / Y" alternative keys were normalised to "X / <modifier> + Y" so
+  the overlay renders both halves correctly. Entries are researcher-
+  verified against official docs, not live-tested in the browser.
+
 ## [0.1.6] - 2026-11-23
 
 ### Removed

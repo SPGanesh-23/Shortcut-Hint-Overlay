@@ -41,7 +41,12 @@ global.window = {
 };
 global.location = global.window.location;
 global.chrome = {
-  runtime: { getURL: (p) => `chrome-extension://x/${p}` },
+  // v0.1.8: content.js asks the background worker for the DB first
+  // (sendMessage), falling back to a direct fetch when messaging is absent.
+  runtime: {
+    getURL: (p) => `chrome-extension://x/${p}`,
+    sendMessage: (_msg, cb) => { setTimeout(() => cb(DB), 0); },
+  },
   storage: { sync: { get: (d, cb) => cb({ ...d }) }, onChanged: { addListener() {} } },
 };
 const DB = {

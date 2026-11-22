@@ -106,7 +106,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Same canonical normaliser as content.js / options.js: lowercase and
     // strip a single leading www. / en. / m. prefix.
     const normalizeHost = (h) => (h || "").toLowerCase().replace(/^(www|en|m)\./, "");
-    const cleanHost = normalizeHost(host);
+    // Path-aware site key (v0.1.10): Docs, Sheets and Slides documents all
+    // live on docs.google.com and differ only by path, so a spreadsheet
+    // (docs.google.com/spreadsheets/…) must resolve to sheets.google.com,
+    // not docs.google.com — same fix as content.js resolveSiteKey().
+    const resolveSiteKey = (hostname, pathname) => {
+      const clean = normalizeHost(hostname);
+      if (clean === "docs.google.com") {
+        if ((pathname || "").startsWith("/spreadsheets/")) return "sheets.google.com";
+        if ((pathname || "").startsWith("/presentation/")) return "slides.google.com";
+        return "docs.google.com";
+      }
+      return clean;
+    };
+    const siteKey = resolveSiteKey(host, url.pathname);
 
     // ── Site disable toggle ───────────────────────────────────────────────
     const DEFAULTS = {
@@ -127,9 +140,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const disabledSites = (settings.disabledSites || []).map(normalizeHost);
-    const siteDisabled = disabledSites.includes(cleanHost);
+    const siteDisabled = disabledSites.includes(siteKey);
 
-    siteToggleLabel.textContent = `Enabled on ${cleanHost}`;
+    siteToggleLabel.textContent = `Enabled on ${siteKey}`;
     siteToggle.checked = !siteDisabled;
     siteToggleRow.style.display = "flex";
 
@@ -141,14 +154,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (siteToggle.checked) {
         // Remove from disabled list (enable on this site)
-        sites = sites.filter(s => s !== cleanHost);
-        siteToggleLabel.textContent = `Enabled on ${cleanHost}`;
+        sites = sites.filter(s => s !== siteKey);
+        siteToggleLabel.textContent = `Enabled on ${siteKey}`;
       } else {
         // Add to disabled list (disable on this site)
-        if (!sites.includes(cleanHost)) {
-          sites.push(cleanHost);
+        if (!sites.includes(siteKey)) {
+          sites.push(siteKey);
         }
-        siteToggleLabel.textContent = `Disabled on ${cleanHost}`;
+        siteToggleLabel.textContent = `Disabled on ${siteKey}`;
       }
 
       await chrome.storage.sync.set({ disabledSites: sites });
@@ -156,14 +169,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Update label text on initial state
     if (siteDisabled) {
-      siteToggleLabel.textContent = `Disabled on ${cleanHost}`;
+      siteToggleLabel.textContent = `Disabled on ${siteKey}`;
     }
 
     // ── Shortcuts display ─────────────────────────────────────────────────
     const res = await fetch(chrome.runtime.getURL("shortcuts-db.json"));
     const shortcutsDb = await res.json();
 
-    const dbEntry = shortcutsDb[host] || shortcutsDb[cleanHost];
+    const dbEntry = shortcutsDb[siteKey];
     
     if (!dbEntry) {
       content.innerHTML = '<div class="message">No curated shortcuts for this site yet.<br><br>Long-press <b>Ctrl</b> on the page to see auto-detected ones!</div>';
@@ -187,7 +200,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     const sLabel = document.createElement("div");
     sLabel.classList.add("section-label");
-    sLabel.textContent = cleanHost.toUpperCase();
+    sLabel.textContent = siteKey.toUpperCase();
     section.appendChild(sLabel);
 
     if (dbNote) {

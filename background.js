@@ -5,6 +5,33 @@
 // not allow content scripts to run (e.g. chrome:// pages).
 // =============================================================================
 
+// Serve the shortcuts DB to content scripts (v0.1.8). A content script's
+// direct fetch() of the DB is blocked by strict page CSPs (e.g.
+// accounts.google.com, which logged "Failed to load shortcuts-db:
+// TypeError: Failed to fetch" on the Errors page). The service worker's
+// fetch is not subject to any page's CSP, so content scripts ask here
+// instead. The DB is fetched once and cached for the worker's lifetime.
+let shortcutsDbPromise = null;
+function getShortcutsDb() {
+  if (!shortcutsDbPromise) {
+    shortcutsDbPromise = fetch(chrome.runtime.getURL("shortcuts-db.json"))
+      .then((r) => r.json())
+      .catch(() => {
+        shortcutsDbPromise = null; // let a later request retry
+        return null;
+      });
+  }
+  return shortcutsDbPromise;
+}
+
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message && message.type === "get-shortcuts-db") {
+    getShortcutsDb().then(sendResponse);
+    return true; // async response
+  }
+  return false;
+});
+
 // Onboarding: on first install, open the welcome page once so new users
 // learn the trigger (hold Ctrl) instead of having to discover it by luck.
 // Updates do not re-open it.

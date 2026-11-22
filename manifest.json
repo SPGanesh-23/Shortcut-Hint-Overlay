@@ -1,13 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Shortcut Hint Overlay",
-  "version": "0.1.6",
+  "version": "0.1.9.2",
   "description": "Long-press Ctrl to see keyboard shortcut hints on any webpage.",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      "run_at": "document_idle"
+      "run_at": "document_idle",
+      "all_frames": true
     }
   ],
   "background": {

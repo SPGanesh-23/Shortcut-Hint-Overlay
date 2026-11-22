@@ -9,6 +9,7 @@ const browserGlobals = {
   window: 'readonly',
   location: 'readonly',
   fetch: 'readonly',
+  MutationObserver: 'readonly',
   setTimeout: 'readonly',
   clearTimeout: 'readonly',
   URL: 'readonly',

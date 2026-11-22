@@ -46,6 +46,66 @@
 
   let searchEmptyEl = null;        // "No shortcuts match …" element (or null)
 
+  // ── Frames (v0.1.9) ───────────────────────────────────────────────────────
+  // Google Docs captures keystrokes in a hidden same-origin iframe, so the
+  // top frame never sees them and the overlay never opened inside a
+  // document (it worked on the Docs homepage, which has no editor iframe).
+  // With "all_frames" in the manifest this script also runs in iframes.
+  // A same-origin iframe is a *forwarder*: it sends its key/click events
+  // to the top frame, which owns the overlay. Cross-origin iframes and the
+  // top frame itself run standalone, as before.
+  // Frame role (v0.1.9.2): v0.1.9 tried to run a forwarder inside the
+  // editor iframe, but Chrome never injects content scripts into
+  // about:blank frames (Docs/Slides' hidden .docs-texteventtarget-iframe)
+  // without "match_origin_as_fallback" — so the forwarder never ran and
+  // Docs/Slides stayed broken. The top frame now hooks same-origin
+  // iframes directly (see hookIframe below), so a same-origin iframe is
+  // inert here: the top frame owns its keys. A cross-origin iframe cannot
+  // be hooked from the top, so it keeps running standalone with its own
+  // overlay, exactly as before.
+  const inFrame = typeof window.top !== "undefined" && window.top !== window;
+  let topReachable = false;
+  try {
+    topReachable = inFrame && !!window.top.location.href;
+  } catch (err) {
+    topReachable = false; // cross-origin: cannot read window.top.location
+  }
+  const isInertFrame = inFrame && topReachable;
+  // Site lookup uses the top frame's hostname when it is readable, so an
+  // editor iframe still resolves to its site (e.g. docs.google.com).
+  function getSiteHostname() {
+    try {
+      if (window.top && window.top !== window && window.top.location) {
+        return window.top.location.hostname;
+      }
+    } catch (err) { /* cross-origin: fall through to our own hostname */ }
+    return window.location.hostname;
+  }
+  function getSitePathname() {
+    try {
+      if (window.top && window.top !== window && window.top.location) {
+        return window.top.location.pathname || "";
+      }
+    } catch (err) { /* cross-origin: fall through to our own pathname */ }
+    return window.location.pathname || "";
+  }
+  // Resolve the DB key for the current page. Hostname alone is not enough:
+  // Google Docs, Sheets and Slides documents ALL live on docs.google.com
+  // and differ only by path (/document/, /spreadsheets/, /presentation/).
+  // Without this, every Workspace document showed Docs shortcuts — a
+  // spreadsheet showed "DOCS.GOOGLE.COM" with Insert comment / Dictionary /
+  // Word count instead of its own Sheets shortcuts.
+  function resolveSiteKey() {
+    const clean = normalizeHost(getSiteHostname());
+    if (clean === "docs.google.com") {
+      const path = getSitePathname();
+      if (path.startsWith("/spreadsheets/")) return "sheets.google.com";
+      if (path.startsWith("/presentation/")) return "slides.google.com";
+      return "docs.google.com";
+    }
+    return clean;
+  }
+
   // ── Tier 1: Global Chrome Shortcuts ────────────────────────────────────────
   // Descriptive reference only — the extension can't trigger or intercept these.
   const GLOBAL_SHORTCUTS = [
@@ -1066,11 +1126,11 @@
    * If none were found, remove the section if it exists.
    */
   function updatePageSection() {
-    const host = window.location.hostname;
-    const cleanHost = normalizeHost(host);
-    
-    // Look up in DB by exact host, or cleaned host (e.g. en.wikipedia.org or wikipedia.org)
-    const dbEntry = shortcutsDb[host] || shortcutsDb[cleanHost];
+    const siteKey = resolveSiteKey();
+
+    // Look up in DB by resolved site key (e.g. sheets.google.com for a
+    // spreadsheet, even though its hostname is docs.google.com).
+    const dbEntry = shortcutsDb[siteKey];
     let pageShortcuts = [];
     let dbNote = null;
     
@@ -1108,7 +1168,7 @@
     // Only add the section if we found shortcuts on this page
     if (pageShortcuts.length > 0) {
       // Use the site's domain as the section title instead of generic "This Page"
-      pageSectionEl = buildSection(cleanHost.toUpperCase(), pageShortcuts, dbNote);
+      pageSectionEl = buildSection(siteKey.toUpperCase(), pageShortcuts, dbNote);
       panelEl.appendChild(pageSectionEl);
     }
 
@@ -1419,23 +1479,120 @@
     }
   }
 
+  // ── Same-origin iframes (v0.1.9.2) ───────────────────────────────────────
+  // Google Docs/Slides catch keys in a hidden about:blank iframe, so the
+  // top document never sees the Ctrl hold. The top frame hooks every
+  // same-origin iframe's window directly instead of relying on code
+  // running inside the frame. Listeners go on the iframe's *window* (not
+  // its document), so they survive Docs rewriting the iframe's document
+  // with document.write, and a MutationObserver catches iframes added
+  // later (Slides adds its editor iframe dynamically; Docs has it at
+  // load). Cross-origin iframes throw on contentWindow access and are
+  // skipped — the top frame cannot listen inside them.
+  const hookedIframeWindows = new Set();
+  const observedIframeDocs = new Set();
+  const observedIframeEls = new Set();
+  const iframeObservers = [];
+
+  function onIframeClick() {
+    // A click inside another document is always "outside" our overlay.
+    if (overlayState === 'locked') setOverlayState('hidden');
+  }
+
+  function observeIframeDocument(doc) {
+    if (!doc || observedIframeDocs.has(doc)) return;
+    observedIframeDocs.add(doc);
+    let frames = [];
+    try { frames = doc.querySelectorAll('iframe') || []; } catch (err) { frames = []; }
+    frames.forEach(hookIframe);
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver((mutations) => {
+        for (const m of mutations || []) {
+          for (const node of m.addedNodes || []) {
+            if (!node) continue;
+            if (node.tagName === 'IFRAME') hookIframe(node);
+            if (typeof node.querySelectorAll === 'function') {
+              let nested = [];
+              try { nested = node.querySelectorAll('iframe') || []; } catch (err) { nested = []; }
+              nested.forEach(hookIframe);
+            }
+          }
+        }
+      });
+      try {
+        observer.observe(doc, { childList: true, subtree: true });
+        iframeObservers.push(observer);
+      } catch (err) { /* some documents cannot be observed; ignore */ }
+    }
+  }
+
+  function hookIframe(el) {
+    let win = null;
+    try { win = el.contentWindow; } catch (err) { return; } // cross-origin
+    if (!win || hookedIframeWindows.has(win)) return;
+    hookedIframeWindows.add(win);
+    try {
+      win.addEventListener('keydown', onKeyDown, true);
+      win.addEventListener('keyup', onKeyUp, true);
+      win.addEventListener('click', onIframeClick, true);
+    } catch (err) { return; }
+    if (!observedIframeEls.has(el)) {
+      observedIframeEls.add(el);
+      // A navigated iframe gets a new window object; re-hook on load.
+      try { el.addEventListener('load', () => hookIframe(el)); } catch (err) { /* ignore */ }
+    }
+    // Nested iframes inside this one (an editor frame inside a frame).
+    try { observeIframeDocument(win.document); } catch (err) { /* cross-origin */ }
+  }
+
+  function startIframeWatching() {
+    observeIframeDocument(document);
+  }
+
+  function stopIframeWatching() {
+    for (const win of hookedIframeWindows) {
+      try {
+        win.removeEventListener('keydown', onKeyDown, true);
+        win.removeEventListener('keyup', onKeyUp, true);
+        win.removeEventListener('click', onIframeClick, true);
+      } catch (err) { /* ignore */ }
+    }
+    hookedIframeWindows.clear();
+    for (const obs of iframeObservers) {
+      try { obs.disconnect(); } catch (err) { /* ignore */ }
+    }
+    iframeObservers.length = 0;
+    observedIframeDocs.clear();
+    observedIframeEls.clear();
+  }
+
   // ── Attach / Detach Listeners ──────────────────────────────────────────────
 
   function attachListeners() {
     if (listenersAttached) return;
+    if (isInertFrame) {
+      // Same-origin iframe: the top frame hooks our window directly, so
+      // we attach nothing here and build no overlay of our own.
+      listenersAttached = true;
+      return;
+    }
     document.addEventListener("keydown", onKeyDown, true);
     document.addEventListener("keyup", onKeyUp, true);
     window.addEventListener("blur", onBlur);
     document.addEventListener("click", onDocumentClick, true);
+    startIframeWatching();
     listenersAttached = true;
   }
 
   function detachListeners() {
     if (!listenersAttached) return;
-    document.removeEventListener("keydown", onKeyDown, true);
-    document.removeEventListener("keyup", onKeyUp, true);
-    window.removeEventListener("blur", onBlur);
-    document.removeEventListener("click", onDocumentClick, true);
+    if (!isInertFrame) {
+      document.removeEventListener("keydown", onKeyDown, true);
+      document.removeEventListener("keyup", onKeyUp, true);
+      window.removeEventListener("blur", onBlur);
+      document.removeEventListener("click", onDocumentClick, true);
+      stopIframeWatching();
+    }
     listenersAttached = false;
     // Clean up any active state
     clearTimer();
@@ -1494,21 +1651,51 @@
   function shouldBeActive(settings) {
     if (!settings.enabled) return false;
     // Normalise BOTH sides: stored entries may pre-date the fix (e.g. an
-    // un-normalised "en.wikipedia.org") and must still match.
-    const host = normalizeHost(window.location.hostname);
+    // un-normalised "en.wikipedia.org") and must still match. Compared
+    // against the resolved site key, so disabling "Sheets" disables
+    // spreadsheets (docs.google.com/spreadsheets/…) and not Docs.
+    const host = resolveSiteKey();
     const disabledSites = (settings.disabledSites || []).map(normalizeHost);
     return !disabledSites.includes(host);
   }
 
-  // Load shortcuts DB
-  try {
-    const dbUrl = chrome.runtime.getURL("shortcuts-db.json");
-    fetch(dbUrl)
-      .then(r => r.json())
-      .then(data => { shortcutsDb = data; })
-      .catch(err => console.error("Failed to load shortcuts-db", err));
-  } catch (err) {
-    // getURL might fail in some sandboxed environments, just ignore
+  // Load shortcuts DB via the background worker (v0.1.8). A direct fetch()
+  // from here is blocked by strict page CSPs (e.g. accounts.google.com),
+  // which used to log "Failed to load shortcuts-db" on the Errors page.
+  // The worker's fetch is not subject to any page's CSP. If messaging is
+  // unavailable (older test stubs), fall back to a direct fetch.
+  function loadShortcutsDbDirect() {
+    try {
+      const dbUrl = chrome.runtime.getURL("shortcuts-db.json");
+      fetch(dbUrl)
+        .then(r => r.json())
+        .then(data => { shortcutsDb = data; })
+        .catch(() => {
+          // DB unavailable (e.g. strict page CSP): the overlay still works
+          // with the global shortcuts + auto-detected ones, so stay silent
+          // instead of logging an error for every such page.
+        });
+    } catch (err) {
+      // getURL might fail in some sandboxed environments, just ignore
+    }
+  }
+  // A same-origin iframe is inert (the top frame hooks it), so it needs no DB.
+  if (!isInertFrame) {
+    try {
+      if (chrome.runtime && typeof chrome.runtime.sendMessage === "function") {
+        chrome.runtime.sendMessage({ type: "get-shortcuts-db" }, (data) => {
+          if (data) {
+            shortcutsDb = data;
+          } else if (chrome.runtime.lastError) {
+            loadShortcutsDbDirect();
+          }
+        });
+      } else {
+        loadShortcutsDbDirect();
+      }
+    } catch (err) {
+      loadShortcutsDbDirect();
+    }
   }
 
   // Read settings and conditionally initialize

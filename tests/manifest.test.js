@@ -11,7 +11,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'u
 
 test('manifest is Manifest V3 with a version', () => {
   assert.equal(manifest.manifest_version, 3);
-  assert.match(manifest.version, /^\d+\.\d+\.\d+$/);
+  assert.match(manifest.version, /^\d+\.\d+\.\d+(\.\d+)?$/, 'version is dotted numbers; a 4th part is allowed for testing patches like 0.1.9.1');
   assert.ok(manifest.name);
   assert.ok(manifest.description);
 });
