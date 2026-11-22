@@ -5,6 +5,15 @@
 // not allow content scripts to run (e.g. chrome:// pages).
 // =============================================================================
 
+// Onboarding: on first install, open the welcome page once so new users
+// learn the trigger (hold Ctrl) instead of having to discover it by luck.
+// Updates do not re-open it.
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === "install") {
+    chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
+  }
+});
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (tab && tab.url) {
     updateIcon(tabId, tab.url);

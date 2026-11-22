@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome — Shortcut Hint Overlay</title>
+  <link rel="stylesheet" href="welcome.css">
+</head>
+<body>
+  <main class="card">
+    <div class="icon">⌨️</div>
+    <h1>Shortcut Hint Overlay</h1>
+    <p class="sub">Keyboard shortcuts for the site you're on — without leaving the page.</p>
+
+    <ol class="steps">
+      <li>
+        <strong>Hold <kbd>Ctrl</kbd></strong> for half a second.
+        <span>An overlay appears with the shortcuts for this site, plus the standard Chrome ones.</span>
+      </li>
+      <li>
+        <strong>Lock it with <kbd>Ctrl</kbd> + <kbd>Space</kbd></strong> (or just click the overlay).
+        <span>Now you can let go of Ctrl and read the list in peace. <kbd>Esc</kbd> closes it.</span>
+      </li>
+      <li>
+        <strong>Search with <kbd>/</kbd></strong> while it's locked.
+        <span>Type to filter by keys or by what the shortcut does — e.g. <code>tab</code> finds <code>Ctrl + Tab</code>.</span>
+      </li>
+      <li>
+        <strong>Use the arrow keys</strong> to walk through the list.
+        <span>Every row is focusable, and the search box is focused automatically when you lock the overlay.</span>
+      </li>
+    </ol>
+
+    <p class="tips">
+      Tip: click the extension icon in your toolbar to see the current site's shortcuts in a popup.
+      To turn the overlay off for a site, use the toggle in that popup, or manage the list in
+      the extension's Options page.
+    </p>
+
+    <div class="actions">
+      <a class="btn primary" href="https://github.com" target="_blank" rel="noopener">Try it on GitHub →</a>
+      <button class="btn" id="options-btn" type="button">Open Options</button>
+      <button class="btn" id="close-btn" type="button">Got it</button>
+    </div>
+
+    <p class="privacy">No accounts, no tracking, no data leaves your computer. Everything is stored locally in Chrome.</p>
+  </main>
+  <script src="welcome.js"></script>
+</body>
+</html>

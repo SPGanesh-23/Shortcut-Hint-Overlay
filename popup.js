@@ -4,6 +4,18 @@
 // big <kbd>. This is the same parser the overlay uses, so both surfaces
 // now render identically.
 // Parses "+", " / " / " or " (alternatives), and " then " / ", " (sequences).
+// Mac: Chrome shortcuts use Cmd / Option instead of Ctrl / Alt. Keys are
+// stored in their Windows form and localised at render time only.
+const IS_MAC = typeof navigator !== "undefined" &&
+  /Mac/.test((navigator.userAgentData && navigator.userAgentData.platform) ||
+    navigator.platform || navigator.userAgent || "");
+function localizeKey(key) {
+  if (!IS_MAC) return key;
+  if (key === "Ctrl") return "Cmd";
+  if (key === "Alt") return "Option";
+  return key;
+}
+
 function renderKeyCombo(rawKeys) {
   const container = document.createElement("span");
   container.classList.add("keys", "key-combo");
@@ -34,7 +46,7 @@ function renderKeyCombo(rawKeys) {
         fragment.appendChild(sep);
       }
       const kbd = document.createElement("kbd");
-      kbd.textContent = k.trim();
+      kbd.textContent = localizeKey(k.trim());
       fragment.appendChild(kbd);
     });
     return fragment;

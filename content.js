@@ -43,6 +43,23 @@
   let shortcutsDb = {};            // Curated site-specific shortcuts from JSON
   let listenersAttached = false;   // Whether event listeners are currently active
   let searchInputEl = null;        // The search <input> inside the shadow panel
+
+  // ── Platform: Mac vs Windows/Linux ──────────────────────────────────────
+  // Chrome shortcuts use Cmd / Option on Mac and Ctrl / Alt elsewhere.
+  // The curated DB and the global list are stored in their Windows form;
+  // keys are localised at render time only, so the data stays canonical.
+  // The extension's own trigger stays a Ctrl long-press on every platform
+  // (holding Cmd would clash with macOS/app shortcuts), so only the
+  // displayed shortcut keys change.
+  const IS_MAC = typeof navigator !== "undefined" &&
+    /Mac/.test((navigator.userAgentData && navigator.userAgentData.platform) ||
+      navigator.platform || navigator.userAgent || "");
+  function localizeKey(key) {
+    if (!IS_MAC) return key;
+    if (key === "Ctrl") return "Cmd";
+    if (key === "Alt") return "Option";
+    return key;
+  }
   let searchEmptyEl = null;        // "No shortcuts match …" element (or null)
 
   // ── Tier 1: Global Chrome Shortcuts ────────────────────────────────────────
@@ -98,6 +115,11 @@
     // ── Build the panel ────────────────────────────────────────────────────
     panelEl = document.createElement("div");
     panelEl.classList.add("panel");
+    // Accessibility: the panel is a dialog, so screen readers announce it
+    // as one instead of reading a pile of unrelated divs.
+    panelEl.setAttribute("role", "dialog");
+    panelEl.setAttribute("aria-label", "Keyboard Shortcuts");
+    panelEl.setAttribute("aria-modal", "false");
     applyTheme();
     // Start hidden (CSS default: opacity 0, pointer-events none).
 
@@ -120,6 +142,17 @@
     lockIcon.classList.add("lock-icon");
     lockIcon.textContent = "🔓";
     lockIcon.title = "Click or press Ctrl+Space to lock open";
+    lockIcon.setAttribute("role", "button");
+    lockIcon.setAttribute("tabindex", "0");
+    lockIcon.setAttribute("aria-label", "Lock overlay open");
+    lockIcon.setAttribute("aria-pressed", "false");
+    lockIcon.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        e.stopPropagation();
+        setOverlayState(overlayState === 'locked' ? 'visible' : 'locked');
+      }
+    });
 
     titleRow.appendChild(icon);
     titleRow.appendChild(title);
@@ -162,8 +195,12 @@
     });
     searchInputEl.addEventListener("keydown", (e) => {
       // Let the document-level handler deal with Esc / Ctrl+Space, but
-      // stop the keystroke reaching the page underneath.
-      e.stopPropagation();
+      // stop the keystroke reaching the page underneath. Arrow/Home/End
+      // keys are left to bubble to the panel, which uses them for row
+      // navigation (and stops them there).
+      if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) {
+        e.stopPropagation();
+      }
     });
 
     searchRow.appendChild(searchInputEl);
@@ -174,6 +211,27 @@
       if (overlayState === 'visible') {
         setOverlayState('locked');
       }
+    });
+
+    // Arrow-key navigation (locked state only): Down / Up walks the
+    // visible shortcut rows, Home / End jumps to the first / last row.
+    // Roving tabindex: the focused row gets tabindex 0, the rest -1.
+    panelEl.addEventListener("keydown", (e) => {
+      if (overlayState !== 'locked') return;
+      if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return;
+      const rows = getVisibleRows();
+      if (rows.length === 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const active = shadowRoot.activeElement;
+      let idx = rows.indexOf(active);
+      if (e.key === "ArrowDown") idx = idx < 0 ? 0 : Math.min(idx + 1, rows.length - 1);
+      if (e.key === "ArrowUp") idx = idx < 0 ? rows.length - 1 : Math.max(idx - 1, 0);
+      if (e.key === "Home") idx = 0;
+      if (e.key === "End") idx = rows.length - 1;
+      rows.forEach((r) => { r.tabIndex = -1; });
+      rows[idx].tabIndex = 0;
+      rows[idx].focus();
     });
 
     shadowRoot.appendChild(panelEl);
@@ -230,7 +288,7 @@
         }
         const kbd = document.createElement("kbd");
         kbd.classList.add("key");
-        kbd.textContent = k.trim();
+        kbd.textContent = localizeKey(k.trim());
         fragment.appendChild(kbd);
       });
       return fragment;
@@ -287,6 +345,13 @@
   function createShortcutRow(sc) {
     const row = document.createElement("div");
     row.classList.add("shortcut-row");
+    // Accessibility: each row is a list item that a screen reader can read
+    // as "keys: label", and it is focusable so arrow-key navigation works.
+    // tabindex is -1 (roving tabindex): only the row the user navigated to
+    // is in the Tab order, so Tab does not have to step through 30 rows.
+    row.setAttribute("role", "listitem");
+    row.setAttribute("aria-label", `${sc.keys}: ${sc.label}`);
+    row.tabIndex = -1;
 
     const keysSpan = renderKeyCombo(sc.keys);
 
@@ -332,6 +397,7 @@
     // Primary list (top 3 shortcuts)
     const list = document.createElement("div");
     list.classList.add("shortcut-list");
+    list.setAttribute("role", "list");
     for (const sc of topShortcuts) {
       list.appendChild(createShortcutRow(sc));
     }
@@ -342,9 +408,11 @@
       const extraContainer = document.createElement("div");
       extraContainer.classList.add("extra-shortcuts");
       extraContainer.style.display = "none"; // Collapsed by default
+      extraContainer.id = `extra-${sectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
       const extraList = document.createElement("div");
       extraList.classList.add("shortcut-list", "extra-list");
+      extraList.setAttribute("role", "list");
       for (const sc of extraShortcuts) {
         extraList.appendChild(createShortcutRow(sc));
       }
@@ -355,6 +423,8 @@
       toggleBtn.classList.add("toggle-more-btn");
       toggleBtn.type = "button";
       toggleBtn.textContent = `View more (${extraShortcuts.length})`;
+      toggleBtn.setAttribute("aria-expanded", "false");
+      toggleBtn.setAttribute("aria-controls", extraContainer.id);
 
       toggleBtn.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -363,10 +433,12 @@
           extraContainer.style.display = "block";
           toggleBtn.textContent = "Show less";
           toggleBtn.classList.add("expanded");
+          toggleBtn.setAttribute("aria-expanded", "true");
         } else {
           extraContainer.style.display = "none";
           toggleBtn.textContent = `View more (${extraShortcuts.length})`;
           toggleBtn.classList.remove("expanded");
+          toggleBtn.setAttribute("aria-expanded", "false");
         }
 
         // Re-clamp position if the panel expanded near the screen bottom/edges
@@ -551,6 +623,19 @@
 
       .shortcut-row:hover {
         background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      /* Keyboard focus must be visible: rows, the View more button and
+         the search box all get a clear outline when focused by keyboard. */
+      .shortcut-row:focus-visible,
+      .toggle-more-btn:focus-visible,
+      .search-input:focus-visible,
+      .lock-icon:focus-visible {
+        outline: 2px solid #6ea8ff;
+        outline-offset: 1px;
+      }
+      .shortcut-row:focus-visible {
+        background-color: rgba(255, 255, 255, 0.08);
       }
 
       .key-combo {
@@ -1184,6 +1269,21 @@
     applySearchFilter("");
   }
 
+  // Rows that are actually visible: their own display is not none, and no
+  // ancestor (section, extra container) is hidden either. Used by arrow-key
+  // navigation and by the search filter's visible-row count.
+  function getVisibleRows() {
+    if (!panelEl) return [];
+    return Array.from(panelEl.querySelectorAll(".shortcut-row")).filter((row) => {
+      let node = row;
+      while (node && node !== panelEl) {
+        if (node.style && node.style.display === "none") return false;
+        node = node.parentNode || node.parent; // parentNode in browsers, parent in tests
+      }
+      return row.style.display !== "none";
+    });
+  }
+
   function setOverlayState(newState) {
     if (overlayState === newState) return;
 
@@ -1207,16 +1307,21 @@
     // Entering state
     if (overlayState === 'hidden') {
       panelEl.classList.remove('visible', 'locked');
-      if (lockIcon) lockIcon.textContent = "🔓";
+      if (lockIcon) { lockIcon.textContent = "🔓"; lockIcon.setAttribute("aria-pressed", "false"); }
       // Do not carry a stale query into the next open.
       clearSearch();
     } else if (overlayState === 'visible') {
       panelEl.classList.add('visible');
       panelEl.classList.remove('locked');
-      if (lockIcon) lockIcon.textContent = "🔓";
+      if (lockIcon) { lockIcon.textContent = "🔓"; lockIcon.setAttribute("aria-pressed", "false"); }
     } else if (overlayState === 'locked') {
       panelEl.classList.add('visible', 'locked');
-      if (lockIcon) lockIcon.textContent = "🔒";
+      if (lockIcon) { lockIcon.textContent = "🔒"; lockIcon.setAttribute("aria-pressed", "true"); }
+      // Keyboard users land in the search box when the overlay locks, so
+      // they can type to filter or press Down to walk the shortcut rows.
+      if (searchInputEl) {
+        try { searchInputEl.focus(); } catch (_) {}
+      }
     }
   }
 

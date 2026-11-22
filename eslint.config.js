@@ -13,6 +13,7 @@ const browserGlobals = {
   clearTimeout: 'readonly',
   URL: 'readonly',
   console: 'readonly',
+  navigator: 'readonly',
   module: 'readonly', // only used by eslint.config.js itself
 };
 

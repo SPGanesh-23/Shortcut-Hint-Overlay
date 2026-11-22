@@ -1,0 +1,4 @@
+# Keep line endings as LF on every platform, so Windows checkouts do not
+# rewrite files to CRLF and `git add` stays warning-free.
+* text=auto eol=lf
+*.png binary

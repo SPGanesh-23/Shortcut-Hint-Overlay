@@ -3,7 +3,28 @@
 All notable changes to Shortcut Hint Overlay are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.1.4] - 2026-11-22
+
+### Added
+- Accessibility: the overlay is now a `dialog` with labelled `list` /
+  `listitem` rows, a lock button with `aria-pressed`, a "View more" toggle
+  with `aria-expanded` / `aria-controls`, and Arrow Up/Down, Home and End
+  navigation between visible rows (roving tabindex). Locking moves keyboard
+  focus into the search box. Visible focus outlines for rows, the toggle,
+  the search box and the lock icon. Covered by 5 new tests
+  (`tests/accessibility.test.js`).
+- Onboarding: the welcome page (`welcome.html`) opens once on first
+  install and teaches the Ctrl hold, Ctrl+Space lock, `/` search and
+  arrow-key navigation, with links to Options and to try it on GitHub.
+  Covered by `tests/onboarding.test.js`.
+- Store assets: `PRIVACY.md` (the extension collects nothing) and
+  `store-listing.md` (Web Store description, category, and the 5
+  screenshots to take).
+
+### Changed
+- Test suite is now 43 tests, all passing; lint clean.
+
+## [0.1.3] - 2026-11-22
 
 ### Added
 - Automated test suite (`npm test`, 32 tests, Node's built-in runner): manifest
@@ -16,6 +37,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - GitHub Actions CI (`.github/workflows/ci.yml`): runs `npm ci`, `npm test`
   and `npm run lint` on every push and pull request, with a CI badge in the
   README.
+- Mac support: on macOS the overlay and popup now display `Cmd` / `Option`
+  instead of `Ctrl` / `Alt` (e.g. `Cmd + T`, `Option + ←`). The data stays
+  in its Windows form and is localised at render time only; the extension's
+  own trigger stays a Ctrl long-press on every platform. Covered by 3 new
+  tests in `tests/mac.test.js`, plus a regression test for the label fixes
+  below (36 tests total).
+- `.gitattributes` forcing LF line endings, so Windows checkouts no longer
+  produce "LF will be replaced by CRLF" warnings on `git add`.
+
+### Fixed
+- Google Sheets: `Alt+Enter` is "Insert line break in cell", not "Insert note".
+- Facebook: J/K/L/C navigate posts, not stories — labels corrected.
+
+### Known limitations
+- The shortcut database was checked by hand for the top 25 sites; the
+  remaining 80 sites have not been individually verified against official
+  sources, and a few entries (e.g. ChatGPT, Claude, Slack, Spotify, Drive)
+  are still unconfirmed. The live web search used for that check failed,
+  so this is recorded here rather than guessed at.
 
 ## [0.1.2] - 2026-11-22
 

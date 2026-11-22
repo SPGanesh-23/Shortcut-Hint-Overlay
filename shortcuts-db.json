@@ -355,22 +355,22 @@
   "facebook.com": [
     {
       "keys": "J",
-      "label": "Next story in feed",
+      "label": "Next post in feed",
       "priority": 1
     },
     {
       "keys": "K",
-      "label": "Previous story in feed",
+      "label": "Previous post in feed",
       "priority": 2
     },
     {
       "keys": "L",
-      "label": "Like the story you're on",
+      "label": "Like the post you're on",
       "priority": 3
     },
     {
       "keys": "C",
-      "label": "Comment on the story",
+      "label": "Comment on the post",
       "priority": 4
     }
   ],
@@ -387,7 +387,7 @@
     },
     {
       "keys": "Alt+Enter",
-      "label": "Insert note",
+      "label": "Insert line break in cell",
       "priority": 3
     },
     {

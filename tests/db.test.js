@@ -59,3 +59,12 @@ test('regression: shortcuts restored in v0.1.1 are still present', () => {
   assert.ok(!('en.wikipedia.org' in db), 'en.wikipedia.org duplicate should not exist');
   assert.equal(entries(db['wikipedia.org']).length, 5, 'wikipedia.org should have 5 shortcuts');
 });
+
+test('regression (v0.1.3): corrected labels stay corrected', () => {
+  const sheets = entries(db['sheets.google.com']);
+  const altEnter = sheets.find((s) => s.keys === 'Alt+Enter');
+  assert.ok(altEnter, 'Sheets Alt+Enter entry missing');
+  assert.equal(altEnter.label, 'Insert line break in cell', 'Alt+Enter inserts a line break, not a note');
+  const facebook = entries(db['facebook.com']);
+  assert.ok(facebook.every((s) => !s.label.includes('story')), 'Facebook labels should say post, not story');
+});
