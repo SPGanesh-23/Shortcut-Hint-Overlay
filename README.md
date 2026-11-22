@@ -70,11 +70,12 @@ Inspired by ChatGPT's native UI, it detects when you hold the **Ctrl** key and s
 - Search covers rows hidden behind "View more" too: while filtering, extra rows are shown and the toggle is hidden; clearing the query restores each section's previous collapsed/expanded state. Empty sections hide, and a "No shortcuts match …" message shows when nothing matches.
 - How to use it: lock the overlay first (Ctrl+Space or click it), then click the search box — or just press `/` while locked to jump straight into it. First Esc while typing only clears the search; a second Esc closes the overlay. The query is cleared every time the overlay closes, so each open starts fresh.
 
-## Added in v0.1.3 — Mac keys, tests, CI
+## Added in v0.1.3 — Tests, CI, label fixes
 
-- **Mac keys:** on macOS the overlay and popup show `Cmd` / `Option` instead of `Ctrl` / `Alt`. The trigger is still a Ctrl long-press everywhere.
 - **Tests & CI:** `npm test` runs 36 automated tests; `npm run lint` checks the code; GitHub Actions runs both on every push (see the CI badge above).
 - **Fixed labels:** Google Sheets `Alt+Enter` is "Insert line break in cell"; Facebook J/K/L/C navigate posts, not stories.
+
+> **Windows only for now.** Mac support was started (a label swap, then a small override table) and removed in v0.1.6 — doing it halfway is worse than not doing it. A full Mac version, checked site by site like Windows, is planned for later.
 
 ## Added in v0.1.4 — Accessibility, onboarding, store assets
 

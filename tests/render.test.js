@@ -12,9 +12,7 @@ const root = path.join(__dirname, '..');
 const popupSrc = fs.readFileSync(path.join(root, 'popup.js'), 'utf8');
 
 function loadRenderKeyCombo() {
-  // Include the IS_MAC / localizeKey block above renderKeyCombo, since the
-  // renderer calls localizeKey for every key chip.
-  const start = popupSrc.indexOf('const IS_MAC');
+  const start = popupSrc.indexOf('function renderKeyCombo');
   const end = popupSrc.indexOf('\ndocument.addEventListener', start);
   assert.ok(start >= 0 && end > start, 'renderKeyCombo not found in popup.js');
   // The function only needs document.createElement / createDocumentFragment.
@@ -22,11 +20,8 @@ function loadRenderKeyCombo() {
     createElement: (t) => new El(t),
     createDocumentFragment: () => new El('#frag'),
   };
-  const fn = new Function(
-    'document', 'navigator',
-    `${popupSrc.slice(start, end)}\nreturn renderKeyCombo;`,
-  );
-  return fn(documentStub, { platform: 'Win32' });
+  const fn = new Function('document', `${popupSrc.slice(start, end)}\nreturn renderKeyCombo;`);
+  return fn(documentStub);
 }
 
 const renderKeyCombo = loadRenderKeyCombo();

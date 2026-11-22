@@ -3,6 +3,32 @@
 All notable changes to Shortcut Hint Overlay are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.6] - 2026-11-23
+
+### Removed
+- All Mac support, and the extension is Windows-only for now. The v0.1.3
+  Ctrl -> Cmd label swap and the v0.1.5 override table (8 entries) were
+  both partial: they fixed Chrome's own shortcuts but left every site
+  shortcut as a guessed swap, with no Mac to live-test on. Doing it
+  halfway is worse than not doing it, so it is all removed — the
+  `MAC_KEY_OVERRIDES` table, the `localizeKeys` / `localizeKey` code, and
+  `tests/mac.test.js`. A full Mac version, with Mac keys checked site by
+  site like Windows, is planned for a future release. The v0.1.3 and
+  v0.1.5 entries below are kept as history.
+
+## [0.1.5] - 2026-11-23
+
+### Fixed
+- Proper Mac key table (the v0.1.3 Ctrl -> Cmd label swap was not enough):
+  History is `Cmd + Y` (not `Cmd + H`, which hides Chrome), Downloads is
+  `Cmd + Shift + J`, DevTools is `Cmd + Option + I`, Back / Forward are
+  `Cmd + [ / ]`, Fullscreen is `Cmd + Ctrl + F`, and Next / Previous tab
+  stay `Ctrl + Tab` / `Ctrl + Shift + Tab` (Cmd + Tab switches apps).
+  The overrides live in `MAC_KEY_OVERRIDES` in `content.js` and are
+  covered by the Mac overlay test. Other keys still map generically
+  (Ctrl -> Cmd, Alt -> Option). Not live-tested on a Mac — no Mac was
+  available — so this is verified by automated tests only.
+
 ## [0.1.4] - 2026-11-22
 
 ### Added

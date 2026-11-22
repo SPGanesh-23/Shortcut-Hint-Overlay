@@ -44,22 +44,6 @@
   let listenersAttached = false;   // Whether event listeners are currently active
   let searchInputEl = null;        // The search <input> inside the shadow panel
 
-  // ── Platform: Mac vs Windows/Linux ──────────────────────────────────────
-  // Chrome shortcuts use Cmd / Option on Mac and Ctrl / Alt elsewhere.
-  // The curated DB and the global list are stored in their Windows form;
-  // keys are localised at render time only, so the data stays canonical.
-  // The extension's own trigger stays a Ctrl long-press on every platform
-  // (holding Cmd would clash with macOS/app shortcuts), so only the
-  // displayed shortcut keys change.
-  const IS_MAC = typeof navigator !== "undefined" &&
-    /Mac/.test((navigator.userAgentData && navigator.userAgentData.platform) ||
-      navigator.platform || navigator.userAgent || "");
-  function localizeKey(key) {
-    if (!IS_MAC) return key;
-    if (key === "Ctrl") return "Cmd";
-    if (key === "Alt") return "Option";
-    return key;
-  }
   let searchEmptyEl = null;        // "No shortcuts match …" element (or null)
 
   // ── Tier 1: Global Chrome Shortcuts ────────────────────────────────────────
@@ -288,7 +272,7 @@
         }
         const kbd = document.createElement("kbd");
         kbd.classList.add("key");
-        kbd.textContent = localizeKey(k.trim());
+        kbd.textContent = k.trim();
         fragment.appendChild(kbd);
       });
       return fragment;

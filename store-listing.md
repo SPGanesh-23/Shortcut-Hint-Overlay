@@ -29,7 +29,7 @@ lives at `PRIVACY.md` in this repo; paste its GitHub URL as the policy link:
 > - Private by design: no accounts, no tracking, no data leaves your
 >   computer. Settings are stored only in Chrome's own sync storage.
 >
-> Works on Windows, Mac and Linux. On Mac, keys are shown as Cmd / Option.
+> Works on Windows. Mac and Linux support is planned for a future release.
 
 ## Category
 
