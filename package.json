@@ -1,0 +1,1 @@
+{"description":"Chrome extension: long-press Ctrl to see keyboard shortcut hints on any webpage.","devDependencies":{"eslint":"^9.39.5"},"engines":{"node":">=20"},"name":"shortcut-hint-overlay","private":true,"scripts":{"lint":"eslint .","test":"node --test tests/*.test.js"},"type":"commonjs","version":"0.1.2"}

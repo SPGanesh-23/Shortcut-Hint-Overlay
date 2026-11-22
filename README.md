@@ -1,11 +1,13 @@
 # Shortcut Hint Overlay — Chrome Extension
 
+[![CI](https://github.com/SPGanesh-23/Shortcut-Hint-Overlay/actions/workflows/ci.yml/badge.svg)](https://github.com/SPGanesh-23/Shortcut-Hint-Overlay/actions/workflows/ci.yml)
+
 A modern, highly polished Chrome extension that helps users discover keyboard shortcuts without leaving the page they are on.
 
 ## Install from GitHub
 
 ```bash
-git clone https://github.com/SPGanesh-23/shortcut-hint-overlay.git
+git clone https://github.com/SPGanesh-23/Shortcut-Hint-Overlay.git
 ```
 
 Then in Chrome: `chrome://extensions` → enable **Developer mode** → **Load unpacked** → select the cloned folder. To update after a new change: `git pull`, then click the reload ↻ button on the extension card in `chrome://extensions` and refresh your tabs — no need to load it again.

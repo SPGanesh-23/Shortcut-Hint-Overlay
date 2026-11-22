@@ -3,6 +3,20 @@
 All notable changes to Shortcut Hint Overlay are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- Automated test suite (`npm test`, 32 tests, Node's built-in runner): manifest
+  and icon validation, `shortcuts-db.json` structure checks, `renderKeyCombo`
+  key-rendering cases, `normalizeHost` cases, and a fake-DOM harness that
+  loads the real `content.js` and exercises the search/filter behaviour
+  (filter, no-match, Esc to clear, reopen, `/` to focus, click to lock).
+- ESLint (`npm run lint`) with a flat config for the browser extension code
+  and the Node tests.
+- GitHub Actions CI (`.github/workflows/ci.yml`): runs `npm ci`, `npm test`
+  and `npm run lint` on every push and pull request, with a CI badge in the
+  README.
+
 ## [0.1.2] - 2026-11-22
 
 ### Added
