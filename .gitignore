@@ -1,0 +1,13 @@
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Packaged builds (the zip is made on release, not committed)
+*.zip
+
+# Node (only used for tests/linting, if added later)
+node_modules/

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shortcut Hint Overlay Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Shortcut Hint Overlay</h1>
+      <p>Configure your keyboard shortcut visualizer</p>
+    </header>
+
+    <div class="settings-card">
+      
+      <div class="setting-row">
+        <div class="setting-info">
+          <label for="enabled-toggle">Enable Shortcut Hint Overlay</label>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="enabled-toggle">
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <label for="duration-slider">Long-press duration</label>
+        </div>
+        <div class="slider-container">
+          <input type="range" id="duration-slider" min="300" max="1000" step="50">
+          <span id="duration-display">500ms</span>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <label for="trigger-key">Trigger key</label>
+          <p class="note">Note: Alt may briefly activate the browser menu bar on release.</p>
+        </div>
+        <select id="trigger-key">
+          <option value="Control">Ctrl</option>
+          <option value="Alt">Alt</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <label for="lock-combo">Lock/unlock shortcut</label>
+        </div>
+        <select id="lock-combo">
+          <option value="ctrlSpace">Ctrl+Space</option>
+          <option value="ctrlSlash">Ctrl+/</option>
+          <option value="ctrlSemicolon">Ctrl+;</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <label for="overlay-position">Overlay position</label>
+        </div>
+        <select id="overlay-position">
+          <option value="bottom-right">Bottom Right</option>
+          <option value="bottom-left">Bottom Left</option>
+          <option value="top-right">Top Right</option>
+          <option value="top-left">Top Left</option>
+          <option value="center">Center</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <label for="theme-select">Theme</label>
+        </div>
+        <select id="theme-select">
+          <option value="auto">Auto (System)</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
+          <label for="global-shortcuts-toggle">Show global Chrome shortcuts</label>
+          <p class="note">Display the Chrome shortcuts section in the overlay.</p>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="global-shortcuts-toggle">
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="setting-row list-row">
+        <div class="setting-info">
+          <label>Disabled sites</label>
+          <p class="note">Extension won't run on these domains.</p>
+        </div>
+        
+        <div class="add-site-controls">
+          <div class="input-group">
+            <input type="text" id="new-site-input" placeholder="example.com">
+            <button id="add-site-btn">Add</button>
+          </div>
+          <button id="add-current-site-btn" class="secondary-btn">Add current site</button>
+        </div>
+        
+        <ul id="disabled-sites-list" class="site-list">
+          <!-- Rendered by JS -->
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="privacy-card">
+      <div class="privacy-header">
+        <svg class="privacy-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+        <h2>What data does this extension access?</h2>
+      </div>
+      
+      <p class="privacy-intro">
+        Shortcut Hint Overlay operates 100% locally inside your browser. Here is an honest, specific breakdown of how permissions and data are handled:
+      </p>
+
+      <ul class="privacy-list">
+        <li>
+          <strong>Page HTML scan (on trigger only):</strong> When you hold the trigger key, the extension scans the active page's HTML for two standard shortcut attributes: <code>accesskey</code> and <code>aria-keyshortcuts</code>. It runs only when activated—never continuously or in the background.
+        </li>
+        <li>
+          <strong>No personal data or history collected:</strong> The extension does not collect, track, or transmit your browsing history, page contents, form inputs, passwords, or personal information.
+        </li>
+        <li>
+          <strong>No external server communication:</strong> Everything runs entirely on your device. The extension does not communicate with any developer server, analytics platform, or external API.
+        </li>
+        <li>
+          <strong>Settings stored locally:</strong> Your preferences (theme, trigger key, position, global shortcuts toggle, and disabled sites list) are saved in your browser via <code>chrome.storage.sync</code>, tied strictly to your Chrome profile.
+        </li>
+        <li>
+          <strong>Bundled shortcuts database:</strong> Curated site shortcuts are read from a static, bundled file (<code>shortcuts-db.json</code>) packaged with the extension itself, not fetched remotely.
+        </li>
+        <li>
+          <strong>Why all-sites permission is needed:</strong> Broad URL access is required solely so the overlay UI and shortcut detection can appear on any web page you visit—not to collect data from those pages.
+        </li>
+      </ul>
+    </div>
+    
+    <div id="toast" class="toast">Saved</div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

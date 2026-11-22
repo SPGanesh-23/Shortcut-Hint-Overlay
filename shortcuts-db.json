@@ -1,0 +1,1432 @@
+{
+  "mail.google.com": {
+    "note": "Prerequisite - (\u2699\ufe0f > See all settings > Keyboard shortcuts on)",
+    "shortcuts": [
+      {
+        "keys": "C",
+        "label": "Compose new email",
+        "priority": 1
+      },
+      {
+        "keys": "/",
+        "label": "Search mail",
+        "priority": 2
+      },
+      {
+        "keys": "J",
+        "label": "Older email",
+        "priority": 3
+      },
+      {
+        "keys": "K",
+        "label": "Newer email",
+        "priority": 4
+      },
+      {
+        "keys": "E",
+        "label": "Archive email",
+        "priority": 5
+      },
+      {
+        "keys": "R",
+        "label": "Reply",
+        "priority": 6
+      },
+      {
+        "keys": "A",
+        "label": "Reply all",
+        "priority": 7
+      },
+      {
+        "keys": "#",
+        "label": "Delete",
+        "priority": 8
+      },
+      {
+        "keys": "Shift + I",
+        "label": "Mark as read",
+        "priority": 9
+      },
+      {
+        "keys": "Shift + U",
+        "label": "Mark as unread",
+        "priority": 10
+      }
+    ]
+  },
+  "youtube.com": [
+    {
+      "keys": "K / Space",
+      "label": "Play / Pause",
+      "priority": 1
+    },
+    {
+      "keys": "J",
+      "label": "Rewind 10s",
+      "priority": 2
+    },
+    {
+      "keys": "L",
+      "label": "Forward 10s",
+      "priority": 3
+    },
+    {
+      "keys": "M",
+      "label": "Mute / Unmute",
+      "priority": 4
+    },
+    {
+      "keys": "F",
+      "label": "Fullscreen",
+      "priority": 5
+    },
+    {
+      "keys": "C",
+      "label": "Toggle captions",
+      "priority": 6
+    },
+    {
+      "keys": "Shift + >",
+      "label": "Increase playback speed",
+      "priority": 7
+    },
+    {
+      "keys": "Shift + <",
+      "label": "Decrease playback speed",
+      "priority": 8
+    },
+    {
+      "keys": "Shift + N",
+      "label": "Next video",
+      "priority": 9
+    },
+    {
+      "keys": "Shift + P",
+      "label": "Previous video",
+      "priority": 10
+    },
+    {
+      "keys": "/",
+      "label": "Focus search",
+      "priority": 11
+    }
+  ],
+  "github.com": {
+    "shortcuts": [
+      {
+        "keys": "?",
+        "label": "Show all keyboard shortcuts",
+        "priority": 1
+      },
+      {
+        "keys": "S",
+        "label": "Focus search bar",
+        "priority": 2
+      },
+      {
+        "keys": "/",
+        "label": "Focus search bar",
+        "priority": 3
+      },
+      {
+        "keys": "T",
+        "label": "Open file finder",
+        "priority": 4
+      },
+      {
+        "keys": "G, D",
+        "label": "Go to homepage",
+        "priority": 5
+      },
+      {
+        "keys": "G, N",
+        "label": "Go to Notifications",
+        "priority": 6
+      },
+      {
+        "keys": "G, C",
+        "label": "Go to Code",
+        "priority": 7
+      },
+      {
+        "keys": "G, I",
+        "label": "Go to Issues",
+        "priority": 8
+      },
+      {
+        "keys": "G, P",
+        "label": "Go to Pull Requests",
+        "priority": 9
+      },
+      {
+        "keys": "G, A",
+        "label": "Go to Actions",
+        "priority": 10
+      },
+      {
+        "keys": "G, R",
+        "label": "Go to Releases (if available)",
+        "priority": 11
+      },
+      {
+        "keys": "G, W",
+        "label": "Go to Wiki (if enabled)",
+        "priority": 12
+      },
+      {
+        "keys": "Y",
+        "label": "Copy permanent URL",
+        "priority": 13
+      },
+      {
+        "keys": ".",
+        "label": "Open github.dev editor",
+        "priority": 14
+      }
+    ]
+  },
+  "docs.google.com": [
+    {
+      "keys": "Ctrl + Alt + M",
+      "label": "Insert comment",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl + Shift + Y",
+      "label": "Dictionary",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl + Shift + C",
+      "label": "Word count",
+      "priority": 3
+    },
+    {
+      "keys": "Ctrl + Alt + C",
+      "label": "Copy formatting",
+      "priority": 4
+    },
+    {
+      "keys": "Ctrl + Alt + V",
+      "label": "Paste formatting",
+      "priority": 5
+    },
+    {
+      "keys": "Ctrl + K",
+      "label": "Insert link",
+      "priority": 6
+    },
+    {
+      "keys": "Ctrl + B",
+      "label": "Bold",
+      "priority": 7
+    }
+  ],
+  "notion.so": [
+    {
+      "keys": "Ctrl + P",
+      "label": "Search or jump to page",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl + [",
+      "label": "Go back",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl + ]",
+      "label": "Go forward",
+      "priority": 3
+    },
+    {
+      "keys": "Ctrl + Shift + L",
+      "label": "Toggle dark mode",
+      "priority": 4
+    },
+    {
+      "keys": "Ctrl + /",
+      "label": "Edit block",
+      "priority": 5
+    }
+  ],
+  "leetcode.com": [
+    {
+      "keys": "Ctrl + '",
+      "label": "Run code",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl + Enter",
+      "label": "Submit code",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl + Space",
+      "label": "Autocomplete",
+      "priority": 3
+    }
+  ],
+  "twitter.com": [
+    {
+      "keys": "J",
+      "label": "Next post",
+      "priority": 1
+    },
+    {
+      "keys": "K",
+      "label": "Previous post",
+      "priority": 2
+    },
+    {
+      "keys": "N",
+      "label": "New post",
+      "priority": 3
+    },
+    {
+      "keys": "L",
+      "label": "Like",
+      "priority": 4
+    },
+    {
+      "keys": "R",
+      "label": "Reply",
+      "priority": 5
+    },
+    {
+      "keys": ".",
+      "label": "Load new posts",
+      "priority": 6
+    }
+  ],
+  "x.com": [
+    {
+      "keys": "J",
+      "label": "Next post",
+      "priority": 1
+    },
+    {
+      "keys": "K",
+      "label": "Previous post",
+      "priority": 2
+    },
+    {
+      "keys": "N",
+      "label": "New post",
+      "priority": 3
+    },
+    {
+      "keys": "L",
+      "label": "Like",
+      "priority": 4
+    },
+    {
+      "keys": "R",
+      "label": "Reply",
+      "priority": 5
+    }
+  ],
+  "reddit.com": [
+    {
+      "keys": "J",
+      "label": "Next post",
+      "priority": 1
+    },
+    {
+      "keys": "K",
+      "label": "Previous post",
+      "priority": 2
+    },
+    {
+      "keys": "A",
+      "label": "Upvote",
+      "priority": 3
+    },
+    {
+      "keys": "Z",
+      "label": "Downvote",
+      "priority": 4
+    },
+    {
+      "keys": "R",
+      "label": "Reply",
+      "priority": 5
+    }
+  ],
+  "facebook.com": [
+    {
+      "keys": "J",
+      "label": "Next story in feed",
+      "priority": 1
+    },
+    {
+      "keys": "K",
+      "label": "Previous story in feed",
+      "priority": 2
+    },
+    {
+      "keys": "L",
+      "label": "Like the story you're on",
+      "priority": 3
+    },
+    {
+      "keys": "C",
+      "label": "Comment on the story",
+      "priority": 4
+    }
+  ],
+  "sheets.google.com": [
+    {
+      "keys": "Ctrl+Space",
+      "label": "Select entire column",
+      "priority": 1
+    },
+    {
+      "keys": "Shift+Space",
+      "label": "Select entire row",
+      "priority": 2
+    },
+    {
+      "keys": "Alt+Enter",
+      "label": "Insert note",
+      "priority": 3
+    },
+    {
+      "keys": "Ctrl+;",
+      "label": "Insert today's date",
+      "priority": 4
+    }
+  ],
+  "slides.google.com": [
+    {
+      "keys": "Ctrl+M",
+      "label": "New slide",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Enter presentation mode",
+      "priority": 2
+    },
+    {
+      "keys": "B",
+      "label": "Blank screen during presentation",
+      "priority": 3
+    }
+  ],
+  "slack.com": [
+    {
+      "keys": "Ctrl+K",
+      "label": "Quick switcher (jump to channel/DM)",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+Shift+A",
+      "label": "All unread messages",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl+/",
+      "label": "Show all shortcuts",
+      "priority": 3
+    },
+    {
+      "keys": "Ctrl+Shift+M",
+      "label": "View mentions",
+      "priority": 4
+    }
+  ],
+  "trello.com": [
+    {
+      "keys": "N",
+      "label": "Create new card",
+      "priority": 1
+    },
+    {
+      "keys": "C",
+      "label": "Archive card",
+      "priority": 2
+    },
+    {
+      "keys": "Space",
+      "label": "Assign yourself to card",
+      "priority": 3
+    },
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 4
+    }
+  ],
+  "asana.com": [
+    {
+      "keys": "Tab then Q",
+      "label": "Quick add task",
+      "priority": 1
+    },
+    {
+      "keys": "Tab then /",
+      "label": "Search",
+      "priority": 2
+    }
+  ],
+  "atlassian.net": [
+    {
+      "keys": "C",
+      "label": "Create issue",
+      "priority": 1
+    },
+    {
+      "keys": ".",
+      "label": "Open command palette",
+      "priority": 2
+    }
+  ],
+  "linkedin.com": [
+    {
+      "keys": "Alt+Home",
+      "label": "Go to Home feed (accessibility shortcut)",
+      "priority": 1
+    },
+    {
+      "keys": "Alt+Messaging",
+      "label": "Go to Messaging (accessibility shortcut)",
+      "priority": 2
+    }
+  ],
+  "netflix.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    },
+    {
+      "keys": "F",
+      "label": "Toggle fullscreen",
+      "priority": 2
+    },
+    {
+      "keys": "M",
+      "label": "Mute",
+      "priority": 3
+    },
+    {
+      "keys": "\u2190 / \u2192",
+      "label": "Seek backward / forward",
+      "priority": 4
+    }
+  ],
+  "open.spotify.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+\u2192",
+      "label": "Next track",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl+\u2190",
+      "label": "Previous track",
+      "priority": 3
+    },
+    {
+      "keys": "Ctrl+L",
+      "label": "Search",
+      "priority": 4
+    }
+  ],
+  "twitch.tv": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    },
+    {
+      "keys": "M",
+      "label": "Mute",
+      "priority": 2
+    },
+    {
+      "keys": "F",
+      "label": "Toggle fullscreen",
+      "priority": 3
+    }
+  ],
+  "drive.google.com": [
+    {
+      "keys": "Shift+F",
+      "label": "New folder",
+      "priority": 1
+    },
+    {
+      "keys": "/",
+      "label": "Search Drive",
+      "priority": 2
+    },
+    {
+      "keys": "C",
+      "label": "Create new",
+      "priority": 3
+    }
+  ],
+  "calendar.google.com": [
+    {
+      "keys": "C",
+      "label": "Create new event",
+      "priority": 1
+    },
+    {
+      "keys": "T",
+      "label": "Go to today",
+      "priority": 2
+    },
+    {
+      "keys": "D",
+      "label": "Switch to Day view",
+      "priority": 3
+    },
+    {
+      "keys": "W",
+      "label": "Switch to Week view",
+      "priority": 4
+    },
+    {
+      "keys": "M",
+      "label": "Switch to Month view",
+      "priority": 5
+    }
+  ],
+  "outlook.com": [
+    {
+      "keys": "Ctrl+N",
+      "label": "New email",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+R",
+      "label": "Reply",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Send email",
+      "priority": 3
+    }
+  ],
+  "office.com": [
+    {
+      "keys": "Ctrl+N",
+      "label": "New email",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Send email",
+      "priority": 2
+    }
+  ],
+  "figma.com": [
+    {
+      "keys": "R",
+      "label": "Rectangle tool",
+      "priority": 1
+    },
+    {
+      "keys": "O",
+      "label": "Ellipse tool",
+      "priority": 2
+    },
+    {
+      "keys": "T",
+      "label": "Text tool",
+      "priority": 3
+    },
+    {
+      "keys": "V",
+      "label": "Move / selection tool",
+      "priority": 4
+    },
+    {
+      "keys": "Ctrl+D",
+      "label": "Duplicate selection",
+      "priority": 5
+    }
+  ],
+  "canva.com": [
+    {
+      "keys": "T",
+      "label": "Text tool",
+      "priority": 1
+    },
+    {
+      "keys": "R",
+      "label": "Rectangle tool",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl+D",
+      "label": "Duplicate element",
+      "priority": 3
+    }
+  ],
+  "codepen.io": [
+    {
+      "keys": "Ctrl+S",
+      "label": "Save pen",
+      "priority": 1
+    }
+  ],
+  "wikipedia.org": [
+    {
+      "keys": "Alt + Shift + F",
+      "label": "Search Wikipedia",
+      "priority": 1
+    },
+    {
+      "keys": "Alt + Shift + E",
+      "label": "Edit this page",
+      "priority": 2
+    },
+    {
+      "keys": "Alt + Shift + T",
+      "label": "Discussion / Talk page",
+      "priority": 3
+    },
+    {
+      "keys": "Alt + Shift + H",
+      "label": "Page revision history",
+      "priority": 4
+    },
+    {
+      "keys": "Alt + Shift + Z",
+      "label": "Go to Main Page",
+      "priority": 5
+    }
+  ],
+  "instagram.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause video/reel",
+      "priority": 1
+    },
+    {
+      "keys": "M",
+      "label": "Mute video/reel",
+      "priority": 2
+    }
+  ],
+  "pinterest.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "discord.com": [
+    {
+      "keys": "Ctrl+K",
+      "label": "Quick switcher",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+Shift+M",
+      "label": "Mute",
+      "priority": 2
+    },
+    {
+      "keys": "Esc",
+      "label": "Mark channel as read",
+      "priority": 3
+    }
+  ],
+  "web.telegram.org": [
+    {
+      "keys": "Ctrl+K",
+      "label": "Search chats",
+      "priority": 1
+    }
+  ],
+  "web.whatsapp.com": [
+    {
+      "keys": "Ctrl+Alt+N",
+      "label": "New chat",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+F",
+      "label": "Search",
+      "priority": 2
+    }
+  ],
+  "medium.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "dev.to": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "news.ycombinator.com": [
+    {
+      "keys": "J",
+      "label": "Next item",
+      "priority": 1
+    },
+    {
+      "keys": "K",
+      "label": "Previous item",
+      "priority": 2
+    }
+  ],
+  "chatgpt.com": [
+    {
+      "keys": "Ctrl + /",
+      "label": "Show keyboard shortcuts",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl + Shift + O",
+      "label": "New chat",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl + Shift + S",
+      "label": "Toggle sidebar",
+      "priority": 3
+    },
+    {
+      "keys": "Ctrl + K",
+      "label": "Search chats",
+      "priority": 4
+    },
+    {
+      "keys": "Shift + Esc",
+      "label": "Focus message input",
+      "priority": 5
+    },
+    {
+      "keys": "Enter",
+      "label": "Send message",
+      "priority": 6
+    },
+    {
+      "keys": "Shift + Enter",
+      "label": "Insert new line",
+      "priority": 7
+    },
+    {
+      "keys": "\u2191 (Up Arrow)",
+      "label": "Edit last prompt",
+      "priority": 8
+    },
+    {
+      "keys": "Ctrl + Shift + ;",
+      "label": "Copy last code block",
+      "priority": 9
+    },
+    {
+      "keys": "Ctrl + Shift + I",
+      "label": "Open Settings",
+      "priority": 10
+    }
+  ],
+  "gemini.google.com": [
+    {
+      "keys": "Ctrl + Shift + O",
+      "label": "New chat",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl + Shift + K",
+      "label": "Search chats",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl + /",
+      "label": "Show shortcuts",
+      "priority": 3
+    }
+  ],
+  "claude.ai": [
+    {
+      "keys": "Ctrl + /",
+      "label": "Show all keyboard shortcuts",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl + Shift + O",
+      "label": "New chat",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl + K",
+      "label": "Search past chats",
+      "priority": 3
+    },
+    {
+      "keys": "Ctrl + Shift + ;",
+      "label": "Focus the message input",
+      "priority": 4
+    },
+    {
+      "keys": "Esc",
+      "label": "Stop response generation",
+      "priority": 5
+    },
+    {
+      "keys": "/",
+      "label": "Open slash-command menu",
+      "priority": 6
+    }
+  ],
+  "airtable.com": [
+    {
+      "keys": "Space",
+      "label": "Expand record",
+      "priority": 1
+    },
+    {
+      "keys": "/",
+      "label": "Open search",
+      "priority": 2
+    }
+  ],
+  "monday.com": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "clickup.com": [
+    {
+      "keys": "Ctrl+K",
+      "label": "Quick search / command menu",
+      "priority": 1
+    }
+  ],
+  "linear.app": [
+    {
+      "keys": "C",
+      "label": "Create new issue",
+      "priority": 1
+    },
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 2
+    },
+    {
+      "keys": "G then I",
+      "label": "Go to Issues",
+      "priority": 3
+    }
+  ],
+  "gitlab.com": [
+    {
+      "keys": "?",
+      "label": "Show all keyboard shortcuts",
+      "priority": 1
+    },
+    {
+      "keys": "S or /",
+      "label": "Focus search bar",
+      "priority": 2
+    }
+  ],
+  "bitbucket.org": [
+    {
+      "keys": "G then O",
+      "label": "Go to repository overview",
+      "priority": 1
+    }
+  ],
+  "meet.google.com": [
+    {
+      "keys": "Ctrl+D",
+      "label": "Toggle mute microphone",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+E",
+      "label": "Toggle camera",
+      "priority": 2
+    }
+  ],
+  "zoom.us": [
+    {
+      "keys": "Alt+A",
+      "label": "Mute / unmute audio",
+      "priority": 1
+    },
+    {
+      "keys": "Alt+V",
+      "label": "Start / stop video",
+      "priority": 2
+    }
+  ],
+  "photos.google.com": [
+    {
+      "keys": "/",
+      "label": "Search photos",
+      "priority": 1
+    }
+  ],
+  "keep.google.com": [
+    {
+      "keys": "C",
+      "label": "Create new note",
+      "priority": 1
+    }
+  ],
+  "evernote.com": [
+    {
+      "keys": "Ctrl+N",
+      "label": "New note",
+      "priority": 1
+    }
+  ],
+  "todoist.com": [
+    {
+      "keys": "Q",
+      "label": "Quick add task",
+      "priority": 1
+    }
+  ],
+  "maps.google.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "primevideo.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    }
+  ],
+  "disneyplus.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    }
+  ],
+  "hulu.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    }
+  ],
+  "max.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    }
+  ],
+  "music.apple.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    }
+  ],
+  "soundcloud.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    }
+  ],
+  "vimeo.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    },
+    {
+      "keys": "F",
+      "label": "Toggle fullscreen",
+      "priority": 2
+    }
+  ],
+  "dailymotion.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    }
+  ],
+  "ebay.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "etsy.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "coursera.org": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause video",
+      "priority": 1
+    }
+  ],
+  "udemy.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause video",
+      "priority": 1
+    },
+    {
+      "keys": "\u2190 / \u2192",
+      "label": "Seek backward / forward",
+      "priority": 2
+    }
+  ],
+  "khanacademy.org": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause video",
+      "priority": 1
+    }
+  ],
+  "duolingo.com": [
+    {
+      "keys": "Enter",
+      "label": "Check answer",
+      "priority": 1
+    }
+  ],
+  "quora.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "mail.yahoo.com": [
+    {
+      "keys": "C",
+      "label": "Compose new email",
+      "priority": 1
+    }
+  ],
+  "proton.me": [
+    {
+      "keys": "C",
+      "label": "Compose new email",
+      "priority": 1
+    }
+  ],
+  "contacts.google.com": [
+    {
+      "keys": "/",
+      "label": "Search contacts",
+      "priority": 1
+    }
+  ],
+  "analytics.google.com": [
+    {
+      "keys": "/",
+      "label": "Search reports",
+      "priority": 1
+    }
+  ],
+  "ads.google.com": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "business.facebook.com": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "wordpress.com": [
+    {
+      "keys": "Ctrl+S",
+      "label": "Save / Update post",
+      "priority": 1
+    },
+    {
+      "keys": "/",
+      "label": "Insert block (in editor)",
+      "priority": 2
+    }
+  ],
+  "shopify.com": [
+    {
+      "keys": "G then P",
+      "label": "Go to Products (admin)",
+      "priority": 1
+    }
+  ],
+  "salesforce.com": [
+    {
+      "keys": "Ctrl+/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "hubspot.com": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "zendesk.com": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "freshdesk.com": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "basecamp.com": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "miro.com": [
+    {
+      "keys": "R",
+      "label": "Rectangle tool",
+      "priority": 1
+    },
+    {
+      "keys": "T",
+      "label": "Text tool",
+      "priority": 2
+    },
+    {
+      "keys": "Ctrl+Z",
+      "label": "Undo",
+      "priority": 3
+    }
+  ],
+  "invisionapp.com": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "behance.net": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "dribbble.com": [
+    {
+      "keys": "/",
+      "label": "Search",
+      "priority": 1
+    }
+  ],
+  "producthunt.com": [
+    {
+      "keys": "J",
+      "label": "Next post",
+      "priority": 1
+    },
+    {
+      "keys": "K",
+      "label": "Previous post",
+      "priority": 2
+    }
+  ],
+  "imdb.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "goodreads.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "letterboxd.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "genius.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "bandcamp.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    }
+  ],
+  "hackerrank.com": [
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Run code",
+      "priority": 1
+    }
+  ],
+  "codeforces.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "replit.com": [
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Run code",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+S",
+      "label": "Save",
+      "priority": 2
+    }
+  ],
+  "codesandbox.io": [
+    {
+      "keys": "Ctrl+S",
+      "label": "Save",
+      "priority": 1
+    }
+  ],
+  "stackblitz.com": [
+    {
+      "keys": "Ctrl+S",
+      "label": "Save",
+      "priority": 1
+    }
+  ],
+  "jsfiddle.net": [
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Run code",
+      "priority": 1
+    }
+  ],
+  "kaggle.com": [
+    {
+      "keys": "Shift+Enter",
+      "label": "Run cell and move to next",
+      "priority": 1
+    }
+  ],
+  "colab.research.google.com": [
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Run current cell",
+      "priority": 1
+    },
+    {
+      "keys": "Shift+Enter",
+      "label": "Run cell and move to next",
+      "priority": 2
+    },
+    {
+      "keys": "Alt+Enter",
+      "label": "Run cell and insert new one below",
+      "priority": 3
+    }
+  ],
+  "overleaf.com": [
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Recompile document",
+      "priority": 1
+    }
+  ],
+  "deepl.com": [
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Translate",
+      "priority": 1
+    }
+  ],
+  "translate.google.com": [
+    {
+      "keys": "Ctrl+Enter",
+      "label": "Translate",
+      "priority": 1
+    }
+  ],
+  "amazon.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "stackoverflow.com": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "craigslist.org": [
+    {
+      "keys": "/",
+      "label": "Focus search bar",
+      "priority": 1
+    }
+  ],
+  "spotify.com": [
+    {
+      "keys": "Space",
+      "label": "Play / Pause",
+      "priority": 1
+    },
+    {
+      "keys": "Ctrl+L",
+      "label": "Search",
+      "priority": 2
+    }
+  ]
+}
