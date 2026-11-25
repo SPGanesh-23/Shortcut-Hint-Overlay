@@ -2,6 +2,7 @@ const DEFAULTS = {
   enabled: true,
   longPressDuration: 500,
   triggerKey: "Control",
+  triggerMode: "release",
   lockCombo: "ctrlSpace",
   disabledSites: [],
   overlayPosition: "bottom-right",
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const durationSlider = document.getElementById('duration-slider');
   const durationDisplay = document.getElementById('duration-display');
   const triggerKeySelect = document.getElementById('trigger-key');
+  const triggerModeSelect = document.getElementById('trigger-mode');
   const lockComboSelect = document.getElementById('lock-combo');
   const overlayPositionSelect = document.getElementById('overlay-position');
   const themeSelect = document.getElementById('theme-select');
@@ -77,15 +79,78 @@ document.addEventListener('DOMContentLoaded', () => {
     return (hostname || "").trim().toLowerCase().replace(/^(www|en|m)\./, '');
   }
 
+  // Subdomain routing (v0.1.10): same allowlist as content.js / popup.js,
+  // so disabling "acme.slack.com" here stores "slack.com" and actually
+  // disables the workspace. See content.js for why it is an explicit
+  // allowlist and not a blanket suffix rule.
+  const SUBDOMAIN_ROUTES = {
+    ".slack.com": "slack.com",
+    ".zendesk.com": "zendesk.com",
+    ".freshdesk.com": "freshdesk.com",
+    ".salesforce.com": "salesforce.com",
+    ".lightning.force.com": "salesforce.com",
+    ".my.salesforce.com": "salesforce.com",
+    ".hubspot.com": "hubspot.com",
+    ".atlassian.net": "atlassian.net",
+    ".wikipedia.org": "wikipedia.org",
+    ".myshopify.com": "shopify.com",
+    ".asana.com": "asana.com",
+    ".monday.com": "monday.com",
+    ".clickup.com": "clickup.com",
+    ".basecamp.com": "basecamp.com",
+    ".shopify.com": "shopify.com",
+    ".discord.com": "discord.com",
+    ".cloud.microsoft": "office.com",
+  };
+  const HOST_ALIASES = {
+    "outlook.office.com": "outlook.com",
+    "outlook.live.com": "outlook.com",
+    "mail.proton.me": "proton.me",
+    "chat.openai.com": "chatgpt.com",
+    "old.reddit.com": "reddit.com",
+    "gist.github.com": "github.com",
+    "app.zoom.us": "zoom.us",
+    "notion.site": "notion.so",
+    "cdpn.io": "codepen.io",
+    "amazon.in": "amazon.com",
+    "amazon.co.uk": "amazon.com",
+    "amazon.de": "amazon.com",
+    "amazon.ca": "amazon.com",
+    "amazon.com.au": "amazon.com",
+    "amazon.co.jp": "amazon.com",
+  };
+  function resolveSiteKey(hostname, pathname) {
+    const clean = normalizeHost(hostname);
+    if (clean === "docs.google.com") {
+      if ((pathname || "").startsWith("/spreadsheets/")) return "sheets.google.com";
+      if ((pathname || "").startsWith("/presentation/")) return "slides.google.com";
+      return "docs.google.com";
+    }
+    if (HOST_ALIASES[clean]) return HOST_ALIASES[clean];
+    let best = null;
+    for (const suffix of Object.keys(SUBDOMAIN_ROUTES)) {
+      if (clean.endsWith(suffix) && (!best || suffix.length > best.length)) best = suffix;
+    }
+    if (best) return SUBDOMAIN_ROUTES[best];
+    return clean;
+  }
+
   function addSite(hostname) {
     if (!hostname) return;
     let site = normalizeHost(hostname);
+    let pathname = "";
     try {
       // Basic extraction if user pastes full URL
       if (site.startsWith('http')) {
-        site = normalizeHost(new URL(site).hostname);
+        const url = new URL(site);
+        site = normalizeHost(url.hostname);
+        pathname = url.pathname || "";
       }
     } catch(e) {}
+
+    // Resolve to the DB key (workspace subdomain / Workspace path), so
+    // the stored entry matches what content.js checks.
+    site = resolveSiteKey(site, pathname);
 
     // Normalise stored entries too, so a legacy "en.wikipedia.org" entry
     // does not sit alongside (and fail to match) "wikipedia.org".
@@ -107,6 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
     durationDisplay.textContent = `${settings.longPressDuration}ms`;
     
     triggerKeySelect.value = settings.triggerKey;
+    triggerModeSelect.value = settings.triggerMode === "peek" ? "peek" : "release";
     lockComboSelect.value = settings.lockCombo;
     overlayPositionSelect.value = settings.overlayPosition || "bottom-right";
     themeSelect.value = settings.theme || "auto";
@@ -131,6 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   triggerKeySelect.addEventListener('change', (e) => {
     saveSettings({ triggerKey: e.target.value });
+  });
+
+  triggerModeSelect.addEventListener('change', (e) => {
+    saveSettings({ triggerMode: e.target.value });
   });
 
   lockComboSelect.addEventListener('change', (e) => {

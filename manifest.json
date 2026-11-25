@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shortcut Hint Overlay",
-  "version": "0.1.9.2",
+  "version": "0.1.12",
   "description": "Long-press Ctrl to see keyboard shortcut hints on any webpage.",
   "content_scripts": [
     {

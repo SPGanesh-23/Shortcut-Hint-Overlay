@@ -3,6 +3,125 @@
 All notable changes to Shortcut Hint Overlay are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.12] - 2026-11-25
+
+### Added
+- Trigger mode setting (Options page → Trigger mode): "Release" (default)
+  opens the overlay locked when the trigger key is released after a clean
+  hold, so ordinary Ctrl+click / Ctrl+scroll / Ctrl+C never trigger it;
+  "Peek" restores the pre-v0.1.11 behaviour — the overlay appears while
+  the key is held and hides on release (Ctrl+Space locks it). Switching
+  takes effect immediately, without a reload, and the panel hint follows
+  the mode ("Hold Ctrl, then release to open" / "Hold Ctrl to peek").
+  Covered by 5 new tests in `tests/trigger-mode.test.js`.
+
+## [0.1.11] - 2026-11-25
+
+### Fixed
+- The overlay could pop up in the middle of Ctrl+click multi-select and
+  Ctrl+scroll zoom: nothing cancelled the 500ms long-press timer on mouse
+  or scroll input. `mousedown` and `wheel` now call `clearTimer()` while
+  the overlay is hidden (content.js). Covered by 3 new tests in
+  `tests/timer-cancel.test.js`.
+- Cancelling the timer once was not enough: while Ctrl stayed held, a
+  fresh keydown re-armed the timer, so the overlay still appeared ~500 ms
+  after a Ctrl+scroll. A click/scroll with the trigger key held now
+  suppresses the long-press for the rest of that hold (lifted when the
+  key is released). A locked overlay is untouched. Covered by 3 new tests
+  in `tests/timer-cancel.test.js`.
+- The trigger is now on release, not on hold: holding the trigger key
+  for the long-press duration only arms the overlay — nothing appears
+  while the key is held. Releasing it after a clean hold opens the
+  overlay, locked open (Esc, click-outside or Ctrl+Space closes it).
+  Any click, scroll or other key during the hold disqualifies it, so
+  Ctrl+click, Ctrl+scroll and Ctrl+C never pop the overlay up, however
+  long Ctrl stays held. This replaces the hold-to-peek behaviour: the
+  overlay no longer appears at 500 ms while the user is still deciding
+  what to click. Covered by a rewritten `tests/timer-cancel.test.js`
+  (6 tests); the other suites' hold helpers now release the key to open.
+  The panel hint now reads "Hold Ctrl, then release to open".
+- Subdomain apps that resolved to no DB entry now route to their site:
+  `.asana.com` → asana.com, `.monday.com` → monday.com, `.clickup.com`
+  → clickup.com, `.basecamp.com` → basecamp.com, `.shopify.com` →
+  shopify.com, plus exact aliases `outlook.live.com` → outlook.com,
+  `mail.proton.me` → proton.me, `chat.openai.com` → chatgpt.com,
+  `old.reddit.com` → reddit.com, `gist.github.com` → github.com,
+  `app.zoom.us` → zoom.us, `notion.site` → notion.so, `cdpn.io` →
+  codepen.io. The tables in content.js, popup.js and options.js are
+  updated identically (the parity test fails if they drift). Covered by
+  new tests in `tests/subdomain-routing.test.js`.
+- The overlay no longer waited for the user to release and re-press Ctrl
+  before showing a site's shortcuts: the `get-shortcuts-db` reply now
+  calls `updatePageSection()` as soon as the DB arrives (content.js).
+- The "Search" label was used twice on salesforce.com (`Ctrl+/` and
+  `/`). `Ctrl+/` is now labelled "Show shortcut menu" (verified against
+  Salesforce's own help); `/` stays "Search". The bogus `G then O/A/C`
+  entries are gone too — Salesforce's Lightning Experience shortcut
+  table lists no such keys — replaced by the documented `G then D/P/U`
+  and `C`.
+- Hand-checked the nine flagged DB entries and fixed the wrong ones:
+  removed Etsy's `Esc` (undocumented, generic), Max's `Tab`/`Enter`
+  (not in HBO Max's help), Google Translate's `Tab`/`Shift+Tab` (the
+  source itself calls them generic), Pinterest's `S` (no Pinterest
+  doc), Instagram's `N` (no Instagram/Meta doc); kept Apple Music's
+  `Ctrl+Right/Left` (Apple Support confirms them), Hulu's `Esc` and
+  `Up/Down` (in the help.hulu.com-sourced list); relabelled JSFiddle's
+  `Ctrl+Shift+Up` to "Toggle sidebar" (JSFiddle's own modal wording).
+  Amazon's `/` was wrong — Amazon's own shortcut menu uses `Alt + /`
+  — corrected.
+- The DB was rewritten by the merge script in v0.1.11, so the file's
+  byte layout changed; content is verified by test, not by diff.
+
+### Added
+- YouTube Music gets its own DB entry (`music.youtube.com`, 10
+  shortcuts, verified from Google's YouTube Music support pages). Its
+  keys differ from plain YouTube: J/K mean next/previous *song*, not
+  seek. DB is now 107 sites / 898 shortcuts.
+- Thin sites filled to ~10 verified shortcuts each where real ones
+  exist: Spotify (10), Apple Music (10), Hulu (10), Netflix (11),
+  Salesforce (10), InVision Freehand (10), Amazon (7), Khan Academy
+  (7), JSFiddle (6), HubSpot (4). 25 sites stay under 10 on purpose —
+  they genuinely have no more documented shortcuts (Hacker News,
+  Craigslist, eBay, Dribbble, IMDb, Goodreads, Etsy, Product Hunt and
+  others publish no shortcut list at all; Google Analytics GA4's
+  current help lists only 2). Nothing was padded with generic keys.
+- When a site's curated list has fewer than 10 entries, the overlay
+  now also shows DOM auto-detected shortcuts as a supplement instead of
+  suppressing auto-detection entirely (content.js).
+- `scanPageShortcuts()` now scans same-origin iframes and shadow DOM
+  (content.js). Cross-origin and sandboxed frames still cannot be
+  scanned — that is a browser limit, noted in a comment.
+
+## [0.1.10] - 2026-11-23
+
+### Fixed
+- Subdomain apps never matched the DB: a real Slack workspace is
+  `yourteam.slack.com`, a Zendesk is `yourcompany.zendesk.com`, HubSpot
+  lives on `app.hubspot.com` — the overlay showed no site shortcuts on
+  any of them. Site lookup now uses an explicit allowlist
+  (`SUBDOMAIN_ROUTES` in content.js, popup.js and options.js, kept
+  identical by test): `.slack.com`, `.zendesk.com`, `.freshdesk.com`,
+  `.salesforce.com` (plus `.lightning.force.com` and
+  `.my.salesforce.com`), `.hubspot.com`, `.atlassian.net`,
+  `.wikipedia.org` (other languages), `.myshopify.com` → their DB keys,
+  longest suffix wins. A blanket suffix rule was deliberately NOT used:
+  it would misfire on `outlook.office.com`, which is Outlook, not
+  Office — that gets an exact alias instead (`HOST_ALIASES`, also
+  covering regional Amazon stores: amazon.in, .co.uk, .de, .ca, .com.au,
+  .co.jp → amazon.com). The same routing now applies in the popup
+  (label + per-site disable toggle) and in the options page (typing a
+  workspace address to disable it stores the resolved key, so the
+  disable actually works). Covered by 9 new tests in
+  `tests/subdomain-routing.test.js`, including the outlook.office.com
+  regression test.
+
+### Added
+- YouTube Studio gets its own DB entry (`studio.youtube.com`, 10
+  shortcuts from Google's official support page: K / Space, J, L, M, F,
+  C, /, Shift + N, Shift + P, Up / Down). It is a different app from
+  YouTube, so borrowing YouTube's watch shortcuts would have been
+  wrong. DB is now 106 sites / 852 shortcuts.
+
 ## [0.1.9.2] - 2026-11-23
 
 ### Fixed

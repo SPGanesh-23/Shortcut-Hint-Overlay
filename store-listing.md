@@ -6,7 +6,7 @@ lives at `PRIVACY.md` in this repo; paste its GitHub URL as the policy link:
 
 ## Short description (max 132 characters)
 
-> Hold Ctrl to see any site's keyboard shortcuts — lock, search, and learn them without leaving the page.
+> Hold Ctrl, then release to see any site's keyboard shortcuts — lock, search, and learn them without leaving the page.
 
 ## Detailed description
 
@@ -44,11 +44,11 @@ English
 Take these in Chrome at a 1280×800 window — Shree, this part needs your
 Chrome, I can't screenshot it from here:
 
-1. **Overlay on GitHub, locked** — hold Ctrl on github.com, lock with
+1. **Overlay on GitHub, locked** — hold Ctrl then release on github.com, lock with
    Ctrl+Space. Shows the GitHub section + Chrome section.
 2. **Search** — same overlay, type `go to` in the search box. Shows only
    the two Go-to rows.
-3. **Overlay on YouTube** — hold Ctrl on a YouTube video page.
+3. **Overlay on YouTube** — hold Ctrl then release on a YouTube video page.
 4. **Toolbar popup** — click the extension icon on github.com.
 5. **Options page** — `chrome://extensions` → Details → Extension options,
    or open `options.html`.

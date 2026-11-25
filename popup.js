@@ -106,6 +106,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Same canonical normaliser as content.js / options.js: lowercase and
     // strip a single leading www. / en. / m. prefix.
     const normalizeHost = (h) => (h || "").toLowerCase().replace(/^(www|en|m)\./, "");
+    // Subdomain routing (v0.1.10): some apps don't live on their main
+    // address — they live on a subdomain per customer or per language, so
+    // the DB key never matches (a real Slack workspace is
+    // yourteam.slack.com, not slack.com). An explicit allowlist only: a
+    // blanket "ends with .X" rule would misfire (outlook.office.com is
+    // Outlook, not office.com — it gets an exact alias instead). Longest
+    // suffix wins (".my.salesforce.com" before ".salesforce.com").
+    const SUBDOMAIN_ROUTES = {
+      ".slack.com": "slack.com",
+      ".zendesk.com": "zendesk.com",
+      ".freshdesk.com": "freshdesk.com",
+      ".salesforce.com": "salesforce.com",
+      ".lightning.force.com": "salesforce.com",
+      ".my.salesforce.com": "salesforce.com",
+      ".hubspot.com": "hubspot.com",
+      ".atlassian.net": "atlassian.net",
+      ".wikipedia.org": "wikipedia.org",
+      ".myshopify.com": "shopify.com",
+      ".asana.com": "asana.com",
+      ".monday.com": "monday.com",
+      ".clickup.com": "clickup.com",
+      ".basecamp.com": "basecamp.com",
+      ".shopify.com": "shopify.com",
+      ".discord.com": "discord.com",
+      ".cloud.microsoft": "office.com",
+    };
+    const HOST_ALIASES = {
+      "outlook.office.com": "outlook.com",
+      "outlook.live.com": "outlook.com",
+      "mail.proton.me": "proton.me",
+      "chat.openai.com": "chatgpt.com",
+      "old.reddit.com": "reddit.com",
+      "gist.github.com": "github.com",
+      "app.zoom.us": "zoom.us",
+      "notion.site": "notion.so",
+      "cdpn.io": "codepen.io",
+      "amazon.in": "amazon.com",
+      "amazon.co.uk": "amazon.com",
+      "amazon.de": "amazon.com",
+      "amazon.ca": "amazon.com",
+      "amazon.com.au": "amazon.com",
+      "amazon.co.jp": "amazon.com",
+    };
     // Path-aware site key (v0.1.10): Docs, Sheets and Slides documents all
     // live on docs.google.com and differ only by path, so a spreadsheet
     // (docs.google.com/spreadsheets/…) must resolve to sheets.google.com,
@@ -117,6 +160,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if ((pathname || "").startsWith("/presentation/")) return "slides.google.com";
         return "docs.google.com";
       }
+      if (HOST_ALIASES[clean]) return HOST_ALIASES[clean];
+      let best = null;
+      for (const suffix of Object.keys(SUBDOMAIN_ROUTES)) {
+        if (clean.endsWith(suffix) && (!best || suffix.length > best.length)) best = suffix;
+      }
+      if (best) return SUBDOMAIN_ROUTES[best];
       return clean;
     };
     const siteKey = resolveSiteKey(host, url.pathname);
@@ -126,6 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       enabled: true,
       longPressDuration: 500,
       triggerKey: "Control",
+      triggerMode: "release",
       lockCombo: "ctrlSpace",
       disabledSites: [],
       theme: "auto"
@@ -179,7 +229,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dbEntry = shortcutsDb[siteKey];
     
     if (!dbEntry) {
-      content.innerHTML = '<div class="message">No curated shortcuts for this site yet.<br><br>Long-press <b>Ctrl</b> on the page to see auto-detected ones!</div>';
+      content.innerHTML = '<div class="message">No curated shortcuts for this site yet.<br><br>Hold <b>Ctrl</b>, then release on the page to see auto-detected ones!</div>';
       return;
     }
 

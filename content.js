@@ -2,7 +2,10 @@
 // Shortcut Hint Overlay — Content Script (Phase 1 + Phase 2)
 // =============================================================================
 // Injected into every normal web page. Detects a long-press of the Ctrl key
-// (~500 ms hold) and shows a Shadow DOM overlay listing keyboard shortcuts.
+// (~500 ms hold) and, on release, shows a Shadow DOM overlay listing
+// keyboard shortcuts. Triggering on release (not on hold) means ordinary
+// Ctrl+click / Ctrl+scroll / Ctrl+C never pops the overlay up: any click,
+// scroll or other key during the hold disqualifies it.
 // Phase 1: Global Chrome shortcuts (always shown).
 // Phase 2: DOM auto-detection of [accesskey] and [aria-keyshortcuts] elements.
 // =============================================================================
@@ -15,6 +18,12 @@
     enabled: true,
     longPressDuration: 500,
     triggerKey: "Control",
+    // v0.1.12: how the long-press opens the overlay. "release" (default)
+    // opens it locked when the key is released after a clean hold, so
+    // ordinary Ctrl+click / Ctrl+scroll / Ctrl+C never trigger it.
+    // "peek" is the pre-v0.1.11 behaviour: the overlay appears while the
+    // key is held and hides on release (Ctrl+Space locks it).
+    triggerMode: "release",
     lockCombo: "ctrlSpace",
     disabledSites: [],
     overlayPosition: "bottom-right",
@@ -24,6 +33,7 @@
 
   let longPressDuration = SETTINGS_DEFAULTS.longPressDuration;
   let triggerKey = SETTINGS_DEFAULTS.triggerKey;
+  let triggerMode = SETTINGS_DEFAULTS.triggerMode;
   let lockCombo = SETTINGS_DEFAULTS.lockCombo;
   let overlayPosition = SETTINGS_DEFAULTS.overlayPosition;
   let theme = SETTINGS_DEFAULTS.theme;
@@ -33,6 +43,19 @@
 
   // ── State ──────────────────────────────────────────────────────────────────
   let pressTimer = null;           // setTimeout handle for the long-press
+  // v0.1.11 fix: cancelling the timer once is not enough. While the trigger
+  // key stays held, any fresh keydown re-arms the timer, so a Ctrl+scroll
+  // only bought ~500 ms before the overlay popped up anyway. Once the user
+  // clicks or scrolls with the trigger key held, the long-press stays
+  // suppressed for the rest of that hold; it is lifted when the key is
+  // released (onKeyUp) or the window blurs.
+  let longPressSuppressed = false;
+  // v0.1.11 (release trigger): the timer no longer opens the overlay when
+  // it fires — it only arms this flag. The overlay opens on release of the
+  // trigger key, and only if the hold was clean: no other key, click or
+  // scroll in between. That is what makes Ctrl+click / Ctrl+scroll /
+  // Ctrl+C safe — those all use the key before releasing it.
+  let longPressReady = false;
   let overlayState = 'hidden';     // 'hidden' | 'visible' | 'locked'
   let hostEl = null;               // The <div> we attach the Shadow DOM to
   let shadowRoot = null;           // The shadow root itself
@@ -43,6 +66,7 @@
   let shortcutsDb = {};            // Curated site-specific shortcuts from JSON
   let listenersAttached = false;   // Whether event listeners are currently active
   let searchInputEl = null;        // The search <input> inside the shadow panel
+  let hintEl = null;               // The "Hold Ctrl…" hint in the panel header
 
   let searchEmptyEl = null;        // "No shortcuts match …" element (or null)
 
@@ -95,6 +119,49 @@
   // Without this, every Workspace document showed Docs shortcuts — a
   // spreadsheet showed "DOCS.GOOGLE.COM" with Insert comment / Dictionary /
   // Word count instead of its own Sheets shortcuts.
+  // Subdomain routing (v0.1.10): some apps don't live on their main
+  // address — they live on a subdomain per customer or per language, so
+  // the DB key never matches (a real Slack workspace is
+  // yourteam.slack.com, not slack.com). An explicit allowlist only: a
+  // blanket "ends with .X" rule would misfire (outlook.office.com is
+  // Outlook, not office.com — it gets an exact alias instead). Longest
+  // suffix wins (".my.salesforce.com" before ".salesforce.com").
+  const SUBDOMAIN_ROUTES = {
+    ".slack.com": "slack.com",
+    ".zendesk.com": "zendesk.com",
+    ".freshdesk.com": "freshdesk.com",
+    ".salesforce.com": "salesforce.com",
+    ".lightning.force.com": "salesforce.com",
+    ".my.salesforce.com": "salesforce.com",
+    ".hubspot.com": "hubspot.com",
+    ".atlassian.net": "atlassian.net",
+    ".wikipedia.org": "wikipedia.org",
+    ".myshopify.com": "shopify.com",
+    ".asana.com": "asana.com",
+    ".monday.com": "monday.com",
+    ".clickup.com": "clickup.com",
+    ".basecamp.com": "basecamp.com",
+    ".shopify.com": "shopify.com",
+    ".discord.com": "discord.com",
+    ".cloud.microsoft": "office.com",
+  };
+  const HOST_ALIASES = {
+    "outlook.office.com": "outlook.com",
+    "outlook.live.com": "outlook.com",
+    "mail.proton.me": "proton.me",
+    "chat.openai.com": "chatgpt.com",
+    "old.reddit.com": "reddit.com",
+    "gist.github.com": "github.com",
+    "app.zoom.us": "zoom.us",
+    "notion.site": "notion.so",
+    "cdpn.io": "codepen.io",
+    "amazon.in": "amazon.com",
+    "amazon.co.uk": "amazon.com",
+    "amazon.de": "amazon.com",
+    "amazon.ca": "amazon.com",
+    "amazon.com.au": "amazon.com",
+    "amazon.co.jp": "amazon.com",
+  };
   function resolveSiteKey() {
     const clean = normalizeHost(getSiteHostname());
     if (clean === "docs.google.com") {
@@ -103,6 +170,12 @@
       if (path.startsWith("/presentation/")) return "slides.google.com";
       return "docs.google.com";
     }
+    if (HOST_ALIASES[clean]) return HOST_ALIASES[clean];
+    let best = null;
+    for (const suffix of Object.keys(SUBDOMAIN_ROUTES)) {
+      if (clean.endsWith(suffix) && (!best || suffix.length > best.length)) best = suffix;
+    }
+    if (best) return SUBDOMAIN_ROUTES[best];
     return clean;
   }
 
@@ -204,7 +277,10 @@
 
     const hint = document.createElement("span");
     hint.classList.add("hint");
-    hint.textContent = "Hold Ctrl to keep open";
+    hint.textContent = triggerMode === "peek"
+      ? "Hold Ctrl to peek"
+      : "Hold Ctrl, then release to open";
+    hintEl = hint;
 
     header.appendChild(titleRow);
     header.appendChild(hint);
@@ -774,7 +850,7 @@
         opacity: 0.9;
       }
       .panel.locked .hint {
-        visibility: hidden; /* Hide the "Hold Ctrl" hint when locked */
+        visibility: hidden; /* Hide the trigger hint when locked */
       }
 
       /* ── Collapsible Extra Shortcuts ──────────────────── */
@@ -1070,6 +1146,17 @@
    * Returns a deduplicated array of {keys, label} objects.
    * @returns {{keys: string, label: string}[]}
    */
+  /**
+   * Scan the current page DOM for [accesskey] and [aria-keyshortcuts] elements.
+   * Returns a deduplicated array of {keys, label} objects.
+   * v0.1.11: also scans same-origin iframes and shadow roots, not just the
+   * top document — sites with no DB entry can hide their shortcuts in an
+   * embedded frame or a web component. Cross-origin and sandboxed iframes
+   * cannot be scanned from the top frame (the browser blocks access to
+   * their documents); that is a documented limit, not something this
+   * function can work around.
+   * @returns {{keys: string, label: string}[]}
+   */
   function scanPageShortcuts() {
     const keyGroups = {}; // key -> array of labels
 
@@ -1077,34 +1164,73 @@
       if (!label || label.trim().length === 0) return;
       // Filter out overly generic labels
       if (/^(button|span|div|a element|svg|path|img|link|input)$/i.test(label)) return;
-      
+
       if (!keyGroups[keys]) keyGroups[keys] = [];
       keyGroups[keys].push(label);
     }
 
-    // ── [accesskey] elements ─────────────────────────────────────────────
-    try {
-      const accessKeyEls = document.querySelectorAll("[accesskey]");
-      for (const el of accessKeyEls) {
-        const rawKey = el.getAttribute("accesskey");
-        if (!rawKey) continue;
-        const keys = formatAccessKey(rawKey);
-        addShortcut(keys, getLabelForElement(el));
-      }
-    } catch (_) {}
+    // Scan one document-like root (the top document, an iframe document,
+    // or a shadow root) for [accesskey] and [aria-keyshortcuts] elements.
+    function scanRoot(root) {
+      // ── [accesskey] elements ─────────────────────────────────────────────
+      try {
+        const accessKeyEls = root.querySelectorAll("[accesskey]");
+        for (const el of accessKeyEls) {
+          const rawKey = el.getAttribute("accesskey");
+          if (!rawKey) continue;
+          const keys = formatAccessKey(rawKey);
+          addShortcut(keys, getLabelForElement(el));
+        }
+      } catch (_) {}
 
-    // ── [aria-keyshortcuts] elements ─────────────────────────────────────
-    try {
-      const ariaEls = document.querySelectorAll("[aria-keyshortcuts]");
-      for (const el of ariaEls) {
-        const rawKeys = el.getAttribute("aria-keyshortcuts");
-        if (!rawKeys) continue;
-        const keys = rawKeys
-          .replace(/Control/g, "Ctrl")
-          .replace(/\+/g, " + ");
-        addShortcut(keys, getLabelForElement(el));
+      // ── [aria-keyshortcuts] elements ─────────────────────────────────────
+      try {
+        const ariaEls = root.querySelectorAll("[aria-keyshortcuts]");
+        for (const el of ariaEls) {
+          const rawKeys = el.getAttribute("aria-keyshortcuts");
+          if (!rawKeys) continue;
+          const keys = rawKeys
+            .replace(/Control/g, "Ctrl")
+            .replace(/\+/g, " + ");
+          addShortcut(keys, getLabelForElement(el));
+        }
+      } catch (_) {}
+    }
+
+    // Collect every scannable root: the top document, plus any same-origin
+    // iframe documents and any shadow roots reachable from them.
+    const roots = [document];
+    const seenRoots = new Set(roots);
+    function collectRoots(root) {
+      let elements = [];
+      try { elements = root.querySelectorAll("*") || []; } catch (_) { elements = []; }
+      for (const el of elements) {
+        // Never scan our own overlay host: its shadow DOM is ours, not the
+        // page's, and its rows must never show up as "page shortcuts".
+        if (el === hostEl) continue;
+        // Shadow DOM: a shadow root is a separate document-like tree whose
+        // elements the top document's querySelectorAll never sees.
+        if (el.shadowRoot && !seenRoots.has(el.shadowRoot)) {
+          seenRoots.add(el.shadowRoot);
+          roots.push(el.shadowRoot);
+          collectRoots(el.shadowRoot);
+        }
+        // Same-origin iframe: reading contentDocument throws for
+        // cross-origin or sandboxed frames — those are skipped (limit).
+        if (el.tagName === "IFRAME") {
+          try {
+            const doc = el.contentDocument;
+            if (doc && !seenRoots.has(doc)) {
+              seenRoots.add(doc);
+              roots.push(doc);
+              collectRoots(doc);
+            }
+          } catch (_) { /* cross-origin / sandboxed: cannot scan */ }
+        }
       }
-    } catch (_) {}
+    }
+    collectRoots(document);
+    for (const root of roots) scanRoot(root);
 
     const finalList = [];
     for (const keys in keyGroups) {
@@ -1135,12 +1261,25 @@
     let dbNote = null;
     
     if (dbEntry) {
-      // 1. Curated takes full priority. Do NOT run DOM scan.
+      // 1. Curated takes priority — but v0.1.11 no longer lets a thin curated
+      // entry suppress DOM detection entirely. If it has fewer than 10
+      // shortcuts, supplement it with auto-detected page shortcuts
+      // (deduped by keys) so the overlay is still useful on sites whose
+      // curated list is a stub. Copy the array first: pushing into it
+      // would mutate the loaded DB in memory.
       if (Array.isArray(dbEntry)) {
-        pageShortcuts = dbEntry;
+        pageShortcuts = dbEntry.slice();
       } else if (typeof dbEntry === "object") {
-        pageShortcuts = dbEntry.shortcuts || [];
+        pageShortcuts = (dbEntry.shortcuts || []).slice();
         dbNote = dbEntry.note || null;
+      }
+      if (pageShortcuts.length < 10) {
+        const seen = new Set(pageShortcuts.map((s) => s.keys.replace(/\s+/g, '').toLowerCase()));
+        for (const sc of scanPageShortcuts()) {
+          if (pageShortcuts.length >= 10) break;
+          const norm = sc.keys.replace(/\s+/g, '').toLowerCase();
+          if (!seen.has(norm)) { seen.add(norm); pageShortcuts.push(sc); }
+        }
       }
     } else {
       // 2. No curated entry, run DOM scan
@@ -1434,27 +1573,65 @@
       }
     }
 
-    // 2. Long-press detection for the configured trigger key
-    if (e.key === triggerKey && !e.repeat && pressTimer === null && overlayState === 'hidden') {
+    // 2. Long-press detection for the configured trigger key. What the
+    // timer does when it fires depends on the trigger mode: in "peek"
+    // mode the overlay appears while the key is held; in "release" mode
+    // (default) it only arms the release trigger and nothing appears
+    // while the key is held, so a user who goes on to click, scroll or
+    // press another key never sees the overlay at all.
+    if (e.key === triggerKey && !e.repeat && pressTimer === null && overlayState === 'hidden' && !longPressSuppressed) {
       // Skip if other modifiers are held (except the trigger key itself)
       if (triggerKey === "Control" && (e.altKey || e.shiftKey || e.metaKey)) return;
       if (triggerKey === "Alt" && (e.ctrlKey || e.shiftKey || e.metaKey)) return;
       pressTimer = setTimeout(() => {
         pressTimer = null;
-        setOverlayState('visible');
+        if (triggerMode === "peek") {
+          setOverlayState('visible');
+        } else {
+          longPressReady = true;
+        }
       }, longPressDuration);
     }
 
-    if (e.key !== triggerKey && pressTimer !== null) {
-      clearTimer();
+    // Any other key during the hold disqualifies the release trigger:
+    // Ctrl+C, Ctrl+V, Ctrl+Tab and friends must never open the overlay
+    // when the user lets go afterwards.
+    if (e.key !== triggerKey) {
+      if (pressTimer !== null) clearTimer();
+      longPressReady = false;
     }
   }
 
   function onKeyUp(e) {
     if (e.key === triggerKey) {
       clearTimer();
-      // Only release-to-hide if we are in transient 'visible' state.
-      // If we are 'locked', releasing the trigger key does nothing.
+      if (triggerMode === "peek") {
+        // Peek mode: releasing the key hides the transient overlay.
+        // (Ctrl+Space locks it first, and a locked overlay ignores
+        // the release.) The release trigger flag is unused here.
+        longPressReady = false;
+        longPressSuppressed = false;
+        if (overlayState === 'visible') {
+          setOverlayState('hidden');
+        }
+        return;
+      }
+      // Release mode (v0.1.11): a clean hold of longPressDuration with
+      // no other input opens the overlay on release, locked open (Esc,
+      // click-outside or Ctrl+Space closes it). A short tap, or a hold
+      // that included a click, scroll or another key, opens nothing.
+      // NOTE: read longPressSuppressed BEFORE clearing it below.
+      const shouldOpen = longPressReady && !longPressSuppressed && overlayState === 'hidden';
+      longPressReady = false;
+      // The hold is over: a later press may trigger the overlay again.
+      longPressSuppressed = false;
+      if (shouldOpen) {
+        setOverlayState('locked');
+        return;
+      }
+      // Only release-to-hide if we are in transient 'visible' state
+      // (reachable via the lock-icon toggle). If we are 'locked',
+      // releasing the trigger key does nothing.
       if (overlayState === 'visible') {
         setOverlayState('hidden');
       }
@@ -1463,12 +1640,39 @@
 
   function onBlur() {
     clearTimer();
+    longPressReady = false;
+    longPressSuppressed = false;
     // Only force-hide on blur if NOT locked
     if (overlayState === 'visible') {
       setOverlayState('hidden');
     }
   }
   
+  // v0.1.11 (release trigger): a bare Ctrl hold is also how users
+  // Ctrl+click to multi-select or Ctrl+scroll to zoom (Figma, Miro,
+  // Canva, Drive, Photos, Maps). A mouse click or a scroll-wheel turn
+  // during the hold means the user is doing something else, so it
+  // disqualifies the release trigger entirely: the timer is cancelled,
+  // the armed flag is cleared, and the hold stays suppressed until the
+  // key is released. The overlay therefore never appears for a
+  // Ctrl+click / Ctrl+scroll, however long the key stays held. A locked
+  // overlay is untouched — locking is deliberate, and onDocumentClick
+  // already handles closing it. (The transient-'visible' hide below only
+  // covers the lock-icon toggle path; the trigger itself never opens the
+  // overlay mid-hold anymore.)
+  function onPointerInput(e) {
+    clearTimer();
+    longPressReady = false;
+    const triggerHeld = e
+      ? (triggerKey === "Control" ? !!e.ctrlKey : triggerKey === "Alt" ? !!e.altKey : false)
+      : false;
+    if (!triggerHeld) return;
+    longPressSuppressed = true;
+    if (overlayState === 'visible') {
+      setOverlayState('hidden');
+    }
+  }
+
   function onDocumentClick(e) {
     if (overlayState === 'locked') {
       // Use composedPath to see if the click originated inside our Shadow DOM
@@ -1535,6 +1739,10 @@
       win.addEventListener('keydown', onKeyDown, true);
       win.addEventListener('keyup', onKeyUp, true);
       win.addEventListener('click', onIframeClick, true);
+      // v0.1.11: a click/scroll inside the iframe is also user input, so it
+      // cancels the pending long-press just like input in the top document.
+      win.addEventListener('mousedown', onPointerInput, true);
+      win.addEventListener('wheel', onPointerInput, true);
     } catch (err) { return; }
     if (!observedIframeEls.has(el)) {
       observedIframeEls.add(el);
@@ -1555,6 +1763,8 @@
         win.removeEventListener('keydown', onKeyDown, true);
         win.removeEventListener('keyup', onKeyUp, true);
         win.removeEventListener('click', onIframeClick, true);
+        win.removeEventListener('mousedown', onPointerInput, true);
+        win.removeEventListener('wheel', onPointerInput, true);
       } catch (err) { /* ignore */ }
     }
     hookedIframeWindows.clear();
@@ -1580,6 +1790,11 @@
     document.addEventListener("keyup", onKeyUp, true);
     window.addEventListener("blur", onBlur);
     document.addEventListener("click", onDocumentClick, true);
+    // v0.1.11: cancel a pending long-press on mouse/scroll input (see
+    // onPointerInput) — Ctrl+click multi-select and Ctrl+scroll zoom must
+    // not pop the overlay up mid-gesture.
+    document.addEventListener("mousedown", onPointerInput, true);
+    document.addEventListener("wheel", onPointerInput, true);
     startIframeWatching();
     listenersAttached = true;
   }
@@ -1591,11 +1806,15 @@
       document.removeEventListener("keyup", onKeyUp, true);
       window.removeEventListener("blur", onBlur);
       document.removeEventListener("click", onDocumentClick, true);
+      document.removeEventListener("mousedown", onPointerInput, true);
+      document.removeEventListener("wheel", onPointerInput, true);
       stopIframeWatching();
     }
     listenersAttached = false;
     // Clean up any active state
     clearTimer();
+    longPressReady = false;
+    longPressSuppressed = false;
     if (overlayState !== 'hidden') {
       setOverlayState('hidden');
     }
@@ -1622,11 +1841,17 @@
   function applySettings(settings) {
     longPressDuration = settings.longPressDuration;
     triggerKey = settings.triggerKey;
+    triggerMode = settings.triggerMode === "peek" ? "peek" : "release";
     lockCombo = settings.lockCombo;
     overlayPosition = settings.overlayPosition || "bottom-right";
     theme = settings.theme || "auto";
     showGlobalShortcuts = settings.showGlobalShortcuts !== undefined ? settings.showGlobalShortcuts : true;
     applyTheme();
+    if (hintEl) {
+      hintEl.textContent = triggerMode === "peek"
+        ? "Hold Ctrl to peek"
+        : "Hold Ctrl, then release to open";
+    }
   }
 
   /**
@@ -1669,7 +1894,13 @@
       const dbUrl = chrome.runtime.getURL("shortcuts-db.json");
       fetch(dbUrl)
         .then(r => r.json())
-        .then(data => { shortcutsDb = data; })
+        .then(data => {
+          shortcutsDb = data;
+          // v0.1.11: re-render if the overlay already exists, so a DB that
+          // arrives after the user opened the overlay still shows its site
+          // section instead of waiting for the next open.
+          if (panelEl) updatePageSection();
+        })
         .catch(() => {
           // DB unavailable (e.g. strict page CSP): the overlay still works
           // with the global shortcuts + auto-detected ones, so stay silent
@@ -1686,6 +1917,10 @@
         chrome.runtime.sendMessage({ type: "get-shortcuts-db" }, (data) => {
           if (data) {
             shortcutsDb = data;
+            // v0.1.11: the DB may arrive after the user already opened the
+            // overlay (or held Ctrl before it loaded) — re-render so the
+            // site section appears instead of waiting for the next open.
+            if (panelEl) updatePageSection();
           } else if (chrome.runtime.lastError) {
             loadShortcutsDbDirect();
           }

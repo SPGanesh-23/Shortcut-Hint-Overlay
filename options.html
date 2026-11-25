@@ -48,6 +48,17 @@
 
       <div class="setting-row">
         <div class="setting-info">
+          <label for="trigger-mode">Trigger mode</label>
+          <p class="note">Release: hold the key, then let go to open — Ctrl+click, Ctrl+scroll and Ctrl+C never trigger it. Peek: the overlay appears while you hold the key and hides when you let go.</p>
+        </div>
+        <select id="trigger-mode">
+          <option value="release">Release — open on let go</option>
+          <option value="peek">Peek — show while holding</option>
+        </select>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-info">
           <label for="lock-combo">Lock/unlock shortcut</label>
         </div>
         <select id="lock-combo">
@@ -137,7 +148,7 @@
           <strong>No external server communication:</strong> Everything runs entirely on your device. The extension does not communicate with any developer server, analytics platform, or external API.
         </li>
         <li>
-          <strong>Settings stored locally:</strong> Your preferences (theme, trigger key, position, global shortcuts toggle, and disabled sites list) are saved in your browser via <code>chrome.storage.sync</code>, tied strictly to your Chrome profile.
+          <strong>Settings stored locally:</strong> Your preferences (theme, trigger key, trigger mode, position, global shortcuts toggle, and disabled sites list) are saved in your browser via <code>chrome.storage.sync</code>, tied strictly to your Chrome profile.
         </li>
         <li>
           <strong>Bundled shortcuts database:</strong> Curated site shortcuts are read from a static, bundled file (<code>shortcuts-db.json</code>) packaged with the extension itself, not fetched remotely.

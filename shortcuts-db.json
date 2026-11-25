@@ -1,6 +1,6 @@
 {
  "mail.google.com": {
-  "note": "Prerequisite - (\u2699\ufe0f > See all settings > Keyboard shortcuts on)",
+  "note": "Prerequisite - (⚙️ > See all settings > Keyboard shortcuts on)",
   "shortcuts": [
    {
     "keys": "C",
@@ -930,7 +930,7 @@
    "priority": 3
   },
   {
-   "keys": "\u2190 / \u2192",
+   "keys": "← / →",
    "label": "Seek backward / forward",
    "priority": 4
   },
@@ -940,12 +940,12 @@
    "priority": 5
   },
   {
-   "keys": "\u2191",
+   "keys": "↑",
    "label": "Volume up",
    "priority": 6
   },
   {
-   "keys": "\u2193",
+   "keys": "↓",
    "label": "Volume down",
    "priority": 7
   },
@@ -958,6 +958,16 @@
    "keys": "Enter",
    "label": "Play / Pause",
    "priority": 9
+  },
+  {
+   "keys": "Shift + ←",
+   "label": "Rewind",
+   "priority": 10
+  },
+  {
+   "keys": "Shift + →",
+   "label": "Fast-forward",
+   "priority": 11
   }
  ],
  "open.spotify.com": [
@@ -967,12 +977,12 @@
    "priority": 1
   },
   {
-   "keys": "Ctrl+\u2192",
+   "keys": "Ctrl+→",
    "label": "Next track",
    "priority": 2
   },
   {
-   "keys": "Ctrl+\u2190",
+   "keys": "Ctrl+←",
    "label": "Previous track",
    "priority": 3
   },
@@ -1039,22 +1049,22 @@
    "priority": 5
   },
   {
-   "keys": "\u2190",
+   "keys": "←",
    "label": "Seek backward 10 seconds",
    "priority": 6
   },
   {
-   "keys": "\u2192",
+   "keys": "→",
    "label": "Seek forward 10 seconds",
    "priority": 7
   },
   {
-   "keys": "\u2191",
+   "keys": "↑",
    "label": "Volume up",
    "priority": 8
   },
   {
-   "keys": "\u2193",
+   "keys": "↓",
    "label": "Volume down",
    "priority": 9
   },
@@ -1507,24 +1517,19 @@
    "priority": 5
   },
   {
-   "keys": "N",
-   "label": "New post",
-   "priority": 6
-  },
-  {
    "keys": "J",
    "label": "Next post",
-   "priority": 7
+   "priority": 6
   },
   {
    "keys": "K",
    "label": "Previous post",
-   "priority": 8
+   "priority": 7
   },
   {
    "keys": "S",
    "label": "Save post",
-   "priority": 9
+   "priority": 8
   }
  ],
  "pinterest.com": [
@@ -1544,14 +1549,9 @@
    "priority": 3
   },
   {
-   "keys": "S",
-   "label": "Save pin",
-   "priority": 4
-  },
-  {
    "keys": "Esc",
    "label": "Close popup",
-   "priority": 5
+   "priority": 4
   }
  ],
  "discord.com": [
@@ -1601,7 +1601,7 @@
    "priority": 9
   },
   {
-   "keys": "Alt + \u2191 / Alt + \u2193",
+   "keys": "Alt + ↑ / Alt + ↓",
    "label": "Previous / Next channel",
    "priority": 10
   }
@@ -1653,7 +1653,7 @@
    "priority": 9
   },
   {
-   "keys": "\u2191 (Up Arrow)",
+   "keys": "↑ (Up Arrow)",
    "label": "Edit last message",
    "priority": 10
   }
@@ -1818,7 +1818,7 @@
    "priority": 7
   },
   {
-   "keys": "\u2191 (Up Arrow)",
+   "keys": "↑ (Up Arrow)",
    "label": "Edit last prompt",
    "priority": 8
   },
@@ -1865,7 +1865,7 @@
    "priority": 6
   },
   {
-   "keys": "\u2191 (Up Arrow)",
+   "keys": "↑ (Up Arrow)",
    "label": "Cycle through previous prompts",
    "priority": 7
   }
@@ -1917,7 +1917,7 @@
    "priority": 9
   },
   {
-   "keys": "\u2191 (Up Arrow)",
+   "keys": "↑ (Up Arrow)",
    "label": "Edit last message",
    "priority": 10
   }
@@ -2345,12 +2345,12 @@
    "priority": 1
   },
   {
-   "keys": "\u2192",
+   "keys": "→",
    "label": "Next photo",
    "priority": 2
   },
   {
-   "keys": "\u2190",
+   "keys": "←",
    "label": "Previous photo",
    "priority": 3
   },
@@ -2615,22 +2615,22 @@
    "priority": 3
   },
   {
-   "keys": "\u2190",
+   "keys": "←",
    "label": "Rewind 10 seconds",
    "priority": 4
   },
   {
-   "keys": "\u2192",
+   "keys": "→",
    "label": "Fast-forward 10 seconds",
    "priority": 5
   },
   {
-   "keys": "\u2191",
+   "keys": "↑",
    "label": "Volume up",
    "priority": 6
   },
   {
-   "keys": "\u2193",
+   "keys": "↓",
    "label": "Volume down",
    "priority": 7
   },
@@ -2672,22 +2672,22 @@
    "priority": 4
   },
   {
-   "keys": "\u2190",
+   "keys": "←",
    "label": "Rewind 10 seconds",
    "priority": 5
   },
   {
-   "keys": "\u2192",
+   "keys": "→",
    "label": "Fast-forward 10 seconds",
    "priority": 6
   },
   {
-   "keys": "\u2191",
+   "keys": "↑",
    "label": "Volume up",
    "priority": 7
   },
   {
-   "keys": "\u2193",
+   "keys": "↓",
    "label": "Volume down",
    "priority": 8
   },
@@ -2734,14 +2734,24 @@
    "priority": 6
   },
   {
-   "keys": "\u2191",
+   "keys": "↑",
    "label": "Scroll up",
    "priority": 7
   },
   {
-   "keys": "\u2193",
+   "keys": "↓",
    "label": "Scroll down",
    "priority": 8
+  },
+  {
+   "keys": "←",
+   "label": "Rewind / Volume down",
+   "priority": 9
+  },
+  {
+   "keys": "→",
+   "label": "Fast-forward / Volume up",
+   "priority": 10
   }
  ],
  "max.com": [
@@ -2751,19 +2761,34 @@
    "priority": 1
   },
   {
-   "keys": "Tab",
-   "label": "Move between items",
+   "keys": "←",
+   "label": "Skip back 10s",
    "priority": 2
   },
   {
-   "keys": "Enter",
-   "label": "Activate links",
+   "keys": "→",
+   "label": "Skip forward 10s",
    "priority": 3
   },
   {
-   "keys": "Esc",
-   "label": "Close menus and overlays",
+   "keys": "↑",
+   "label": "Volume up",
    "priority": 4
+  },
+  {
+   "keys": "↓",
+   "label": "Volume down",
+   "priority": 5
+  },
+  {
+   "keys": "M",
+   "label": "Mute / Unmute",
+   "priority": 6
+  },
+  {
+   "keys": "Esc",
+   "label": "Exit fullscreen",
+   "priority": 7
   }
  ],
  "music.apple.com": [
@@ -2773,24 +2798,49 @@
    "priority": 1
   },
   {
-   "keys": "Ctrl + \u2192",
+   "keys": "Ctrl + →",
    "label": "Next track",
    "priority": 2
   },
   {
-   "keys": "Ctrl + \u2190",
+   "keys": "Ctrl + ←",
    "label": "Previous track",
    "priority": 3
   },
   {
-   "keys": "Ctrl + \u2191",
+   "keys": "Ctrl + ↑",
    "label": "Volume up",
    "priority": 4
   },
   {
-   "keys": "Ctrl + \u2193",
+   "keys": "Ctrl + ↓",
    "label": "Volume down",
    "priority": 5
+  },
+  {
+   "keys": "Ctrl + L",
+   "label": "Show current song",
+   "priority": 6
+  },
+  {
+   "keys": "Ctrl + Shift + E",
+   "label": "Open equaliser",
+   "priority": 7
+  },
+  {
+   "keys": "Shift + Ctrl + M",
+   "label": "Open MiniPlayer",
+   "priority": 8
+  },
+  {
+   "keys": "Shift + Ctrl + F",
+   "label": "Full Screen Player",
+   "priority": 9
+  },
+  {
+   "keys": "Ctrl + Alt + →",
+   "label": "Move forward in song",
+   "priority": 10
   }
  ],
  "soundcloud.com": [
@@ -2800,12 +2850,12 @@
    "priority": 1
   },
   {
-   "keys": "Shift + \u2192",
+   "keys": "Shift + →",
    "label": "Next track",
    "priority": 2
   },
   {
-   "keys": "Shift + \u2190",
+   "keys": "Shift + ←",
    "label": "Previous track",
    "priority": 3
   },
@@ -2835,12 +2885,12 @@
    "priority": 8
   },
   {
-   "keys": "Shift + \u2191",
+   "keys": "Shift + ↑",
    "label": "Volume up",
    "priority": 9
   },
   {
-   "keys": "Shift + \u2193",
+   "keys": "Shift + ↓",
    "label": "Volume down",
    "priority": 10
   }
@@ -2867,22 +2917,22 @@
    "priority": 4
   },
   {
-   "keys": "\u2191",
+   "keys": "↑",
    "label": "Volume up",
    "priority": 5
   },
   {
-   "keys": "\u2193",
+   "keys": "↓",
    "label": "Volume down",
    "priority": 6
   },
   {
-   "keys": "\u2192",
+   "keys": "→",
    "label": "Scrub forward",
    "priority": 7
   },
   {
-   "keys": "\u2190",
+   "keys": "←",
    "label": "Scrub backward",
    "priority": 8
   },
@@ -2914,22 +2964,22 @@
    "priority": 3
   },
   {
-   "keys": "\u2192",
+   "keys": "→",
    "label": "Skip forward 10 seconds",
    "priority": 4
   },
   {
-   "keys": "\u2190",
+   "keys": "←",
    "label": "Skip back 10 seconds",
    "priority": 5
   },
   {
-   "keys": "\u2191",
+   "keys": "↑",
    "label": "Volume up",
    "priority": 6
   },
   {
-   "keys": "\u2193",
+   "keys": "↓",
    "label": "Volume down",
    "priority": 7
   },
@@ -2961,11 +3011,6 @@
    "keys": "/",
    "label": "Focus search bar",
    "priority": 1
-  },
-  {
-   "keys": "Esc",
-   "label": "Close modal or dropdown",
-   "priority": 2
   }
  ],
  "coursera.org": [
@@ -2985,12 +3030,12 @@
    "priority": 3
   },
   {
-   "keys": "\u2190 / \u2192",
+   "keys": "← / →",
    "label": "Seek back / forward",
    "priority": 4
   },
   {
-   "keys": "\u2191 / \u2193",
+   "keys": "↑ / ↓",
    "label": "Volume up / down",
    "priority": 5
   },
@@ -3027,7 +3072,7 @@
    "priority": 1
   },
   {
-   "keys": "\u2190 / \u2192",
+   "keys": "← / →",
    "label": "Seek backward / forward",
    "priority": 2
   },
@@ -3047,17 +3092,17 @@
    "priority": 5
   },
   {
-   "keys": "Shift + \u2190",
+   "keys": "Shift + ←",
    "label": "Slower playback",
    "priority": 6
   },
   {
-   "keys": "Shift + \u2192",
+   "keys": "Shift + →",
    "label": "Faster playback",
    "priority": 7
   },
   {
-   "keys": "\u2191 / \u2193",
+   "keys": "↑ / ↓",
    "label": "Volume up / down",
    "priority": 8
   },
@@ -3079,12 +3124,12 @@
    "priority": 1
   },
   {
-   "keys": "\u2190 / \u2192",
+   "keys": "← / →",
    "label": "Seek back / forward",
    "priority": 2
   },
   {
-   "keys": "\u2191 / \u2193",
+   "keys": "↑ / ↓",
    "label": "Volume up / down",
    "priority": 3
   },
@@ -3097,6 +3142,16 @@
    "keys": "M",
    "label": "Mute",
    "priority": 5
+  },
+  {
+   "keys": "Tab",
+   "label": "Next interactive element",
+   "priority": 6
+  },
+  {
+   "keys": "Shift + Tab",
+   "label": "Previous element",
+   "priority": 7
   }
  ],
  "duolingo.com": [
@@ -3537,7 +3592,7 @@
  "salesforce.com": [
   {
    "keys": "Ctrl+/",
-   "label": "Search",
+   "label": "Show shortcut menu",
    "priority": 1
   },
   {
@@ -3561,24 +3616,29 @@
    "priority": 5
   },
   {
-   "keys": "G then O",
-   "label": "Go to Opportunities",
+   "keys": "G then D",
+   "label": "Go to composer window",
    "priority": 6
   },
   {
-   "keys": "G then A",
-   "label": "Go to Accounts",
+   "keys": "G then P",
+   "label": "Go to publisher",
    "priority": 7
   },
   {
-   "keys": "G then C",
-   "label": "Go to Contacts",
+   "keys": "G then U",
+   "label": "Go to utility bar",
    "priority": 8
+  },
+  {
+   "keys": "C",
+   "label": "Focus notifications",
+   "priority": 9
   },
   {
    "keys": "Esc",
    "label": "Close or deselect",
-   "priority": 9
+   "priority": 10
   }
  ],
  "hubspot.com": [
@@ -3586,6 +3646,21 @@
    "keys": "/",
    "label": "Search",
    "priority": 1
+  },
+  {
+   "keys": "Ctrl + S",
+   "label": "Save view changes",
+   "priority": 2
+  },
+  {
+   "keys": "Ctrl + Shift + L",
+   "label": "Edit view columns",
+   "priority": 3
+  },
+  {
+   "keys": "Ctrl + Shift + X",
+   "label": "Export contacts",
+   "priority": 4
   }
  ],
  "zendesk.com": [
@@ -3801,6 +3876,51 @@
    "keys": "/",
    "label": "Search",
    "priority": 1
+  },
+  {
+   "keys": "V / 1",
+   "label": "Pointer tool",
+   "priority": 2
+  },
+  {
+   "keys": "P / 2",
+   "label": "Pencil tool",
+   "priority": 3
+  },
+  {
+   "keys": "E",
+   "label": "Eraser tool",
+   "priority": 4
+  },
+  {
+   "keys": "T / 3",
+   "label": "Text tool",
+   "priority": 5
+  },
+  {
+   "keys": "S / 4",
+   "label": "Shape tool",
+   "priority": 6
+  },
+  {
+   "keys": "I / 5",
+   "label": "Image tool",
+   "priority": 7
+  },
+  {
+   "keys": "N / 6",
+   "label": "Sticky note",
+   "priority": 8
+  },
+  {
+   "keys": "Ctrl + + / Ctrl + -",
+   "label": "Zoom in / out",
+   "priority": 9
+  },
+  {
+   "keys": "Space",
+   "label": "Pan canvas while held",
+   "priority": 10
   }
  ],
  "behance.net": [
@@ -4131,7 +4251,7 @@
  ],
  "jsfiddle.net": [
   {
-   "keys": "Ctrl+Enter",
+   "keys": "Ctrl + Enter",
    "label": "Run code",
    "priority": 1
   },
@@ -4157,7 +4277,7 @@
   },
   {
    "keys": "Ctrl + Shift + Up",
-   "label": "Show/hide framework panel",
+   "label": "Toggle sidebar",
    "priority": 6
   }
  ],
@@ -4326,7 +4446,7 @@
  ],
  "translate.google.com": [
   {
-   "keys": "Ctrl+Enter",
+   "keys": "Ctrl + Enter",
    "label": "Translate",
    "priority": 1
   },
@@ -4334,23 +4454,43 @@
    "keys": "Ctrl + Shift + S",
    "label": "Swap languages",
    "priority": 2
-  },
-  {
-   "keys": "Tab",
-   "label": "Next UI item",
-   "priority": 3
-  },
-  {
-   "keys": "Shift + Tab",
-   "label": "Previous UI item",
-   "priority": 4
   }
  ],
  "amazon.com": [
   {
-   "keys": "/",
+   "keys": "Alt + /",
    "label": "Focus search bar",
    "priority": 1
+  },
+  {
+   "keys": "Shift + Alt + C",
+   "label": "Go to cart",
+   "priority": 2
+  },
+  {
+   "keys": "Shift + Alt + H",
+   "label": "Go to home",
+   "priority": 3
+  },
+  {
+   "keys": "Shift + Alt + O",
+   "label": "Go to orders",
+   "priority": 4
+  },
+  {
+   "keys": "Shift + Alt + K",
+   "label": "Add to cart",
+   "priority": 5
+  },
+  {
+   "keys": "Shift + Alt + D",
+   "label": "View product summary",
+   "priority": 6
+  },
+  {
+   "keys": "Shift + Alt + Z",
+   "label": "Show / hide shortcuts",
+   "priority": 7
   }
  ],
  "stackoverflow.com": [
@@ -4405,6 +4545,58 @@
    "priority": 10
   }
  ],
+ "studio.youtube.com": [
+  {
+   "keys": "K / Space",
+   "label": "Play / Pause",
+   "priority": 1
+  },
+  {
+   "keys": "J",
+   "label": "Rewind 10s",
+   "priority": 2
+  },
+  {
+   "keys": "L",
+   "label": "Forward 10s",
+   "priority": 3
+  },
+  {
+   "keys": "M",
+   "label": "Mute / Unmute",
+   "priority": 4
+  },
+  {
+   "keys": "F",
+   "label": "Fullscreen",
+   "priority": 5
+  },
+  {
+   "keys": "C",
+   "label": "Toggle captions",
+   "priority": 6
+  },
+  {
+   "keys": "/",
+   "label": "Focus search",
+   "priority": 7
+  },
+  {
+   "keys": "Shift + N",
+   "label": "Next video",
+   "priority": 8
+  },
+  {
+   "keys": "Shift + P",
+   "label": "Previous video",
+   "priority": 9
+  },
+  {
+   "keys": "Up / Down",
+   "label": "Increase / Decrease volume 5%",
+   "priority": 10
+  }
+ ],
  "craigslist.org": [
   {
    "keys": "/",
@@ -4419,9 +4611,101 @@
    "priority": 1
   },
   {
-   "keys": "Ctrl+L",
-   "label": "Search",
+   "keys": "Ctrl + L",
+   "label": "Go to Search",
    "priority": 2
+  },
+  {
+   "keys": "Ctrl + K",
+   "label": "Open Search",
+   "priority": 3
+  },
+  {
+   "keys": "M",
+   "label": "Mute / Unmute",
+   "priority": 4
+  },
+  {
+   "keys": "Ctrl + S",
+   "label": "Shuffle",
+   "priority": 5
+  },
+  {
+   "keys": "Ctrl + R",
+   "label": "Repeat",
+   "priority": 6
+  },
+  {
+   "keys": "Alt + Shift + H",
+   "label": "Go to Home",
+   "priority": 7
+  },
+  {
+   "keys": "Alt + Shift + J",
+   "label": "Go to Now Playing",
+   "priority": 8
+  },
+  {
+   "keys": "Alt + Shift + Q",
+   "label": "Go to Queue",
+   "priority": 9
+  },
+  {
+   "keys": "Alt + Shift + S",
+   "label": "Go to Liked Songs",
+   "priority": 10
+  }
+ ],
+ "music.youtube.com": [
+  {
+   "keys": "Space / ;",
+   "label": "Play / Pause",
+   "priority": 1
+  },
+  {
+   "keys": "J / Shift + N",
+   "label": "Next song",
+   "priority": 2
+  },
+  {
+   "keys": "K / Shift + P",
+   "label": "Previous song",
+   "priority": 3
+  },
+  {
+   "keys": "H / Shift + Left Arrow",
+   "label": "Back 10 seconds",
+   "priority": 4
+  },
+  {
+   "keys": "L / Shift + Right Arrow",
+   "label": "Forward 10 seconds",
+   "priority": 5
+  },
+  {
+   "keys": "S",
+   "label": "Shuffle queue",
+   "priority": 6
+  },
+  {
+   "keys": "R",
+   "label": "Cycle repeat mode",
+   "priority": 7
+  },
+  {
+   "keys": "Shift + =",
+   "label": "Like song",
+   "priority": 8
+  },
+  {
+   "keys": "M",
+   "label": "Mute / Unmute",
+   "priority": 9
+  },
+  {
+   "keys": "/",
+   "label": "Search",
+   "priority": 10
   }
  ]
 }
