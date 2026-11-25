@@ -74,6 +74,8 @@ const visibleRows = () => rows().filter((r) => r.style.display !== 'none');
 async function holdCtrl() {
   fireDoc('keydown', { key: 'Control', code: 'ControlLeft', repeat: false, ctrlKey: true });
   await sleep(650); // long-press is 500 ms
+  fireDoc('keyup', { key: 'Control', code: 'ControlLeft' }); // release trigger opens it (locked)
+  await sleep(50);
   host = docEl.children.find((c) => c.tagName === 'DIV');
   shadow = host._shadow;
   panel = shadow.children.find((c) => c.classList.contains('panel'));
@@ -91,8 +93,7 @@ test('overlay opens on a Ctrl long-press and has a search box', async () => {
 });
 
 test('filter finds a collapsed "View more" row', async () => {
-  // Lock first (search is meant for the locked state).
-  fireDoc('keydown', { key: ' ', code: 'Space', ctrlKey: true });
+  // Already locked: the release trigger opens the overlay locked.
   assert.ok(panel.classList.contains('locked'));
   search.value = 'issues';
   search.dispatch('input', {});
@@ -133,14 +134,14 @@ test('search is cleared when the overlay reopens', async () => {
 });
 
 test('"/" focuses the search box when locked, and clicking it locks', async () => {
-  fireDoc('keydown', { key: ' ', code: 'Space', ctrlKey: true });
+  // Already locked: the release trigger opens the overlay locked.
   assert.ok(panel.classList.contains('locked'));
   shadow.activeElement = null;
   fireDoc('keydown', { key: '/' });
   assert.equal(shadow.activeElement, search, '"/" should focus the search box');
   fireDoc('keydown', { key: 'Escape' }); // close
-  await holdCtrl(); // reopen, visible but not locked
-  assert.ok(!panel.classList.contains('locked'));
+  await holdCtrl(); // reopen — the release trigger opens it locked
+  assert.ok(panel.classList.contains('locked'));
   search.click();
-  assert.ok(panel.classList.contains('locked'), 'clicking the search box should lock');
+  assert.ok(panel.classList.contains('locked'), 'clicking the search box should keep it locked');
 });

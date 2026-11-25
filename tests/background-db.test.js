@@ -44,7 +44,7 @@ test('background worker returns the shortcuts DB to content scripts', async () =
   assert.equal(replied, true, 'listener should return true for an async response');
   await sleep(20);
   assert.ok(answer, 'worker should answer with the DB');
-  assert.equal(Object.keys(answer).length, 105, 'DB should have 105 sites');
+  assert.equal(Object.keys(answer).length, 107, 'DB should have 107 sites');
   assert.equal(answer['github.com'].shortcuts.length, 14, 'GitHub should have 14 shortcuts');
 });
 

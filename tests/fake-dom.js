@@ -13,6 +13,20 @@ class ClassList {
 
 function matches(el, sel) {
   if (!el || !el.tagName) return false;
+  if (sel === '*') return true; // every element (used by the v0.1.11 root walk)
+  if (sel.startsWith('[') && sel.endsWith(']')) {
+    // Attribute selector: [accesskey] or [aria-keyshortcuts] (v0.1.11 scan).
+    const inner = sel.slice(1, -1);
+    const eq = inner.indexOf('=');
+    const attr = eq >= 0 ? inner.slice(0, eq) : inner;
+    const val = el.getAttribute ? el.getAttribute(attr) : null;
+    if (val == null) return false;
+    if (eq >= 0) {
+      const want = inner.slice(eq + 1).replace(/^["']|["']$/g, '');
+      return String(val) === want;
+    }
+    return true;
+  }
   if (sel.startsWith('.')) {
     return sel.slice(1).split('.').every((c) => el.classList.contains(c));
   }

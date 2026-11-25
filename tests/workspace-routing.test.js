@@ -74,6 +74,8 @@ eval(src);
 async function holdCtrl() {
   fireDoc('keydown', { key: 'Control', code: 'ControlLeft', repeat: false, ctrlKey: true });
   await sleep(650); // long-press is 500 ms
+  fireDoc('keyup', { key: 'Control', code: 'ControlLeft' }); // release trigger opens it
+  await sleep(50);
 }
 function panelAndText() {
   const host = docEl.children.find((c) => c.tagName === 'DIV');

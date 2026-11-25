@@ -67,12 +67,14 @@ async function openAndLock() {
   await sleep(20);
   fireDoc('keydown', { key: 'Control', code: 'ControlLeft', repeat: false, ctrlKey: true });
   await sleep(650);
+  // Release trigger: a clean hold opens the overlay locked.
+  fireDoc('keyup', { key: 'Control', code: 'ControlLeft' });
+  await sleep(50);
   host = docEl.children.find((c) => c.tagName === 'DIV');
   shadow = host._shadow;
   panel = shadow.children.find((c) => c.classList.contains('panel'));
   search = panel.querySelector('.search-input');
   lockIcon = panel.querySelector('.lock-icon');
-  fireDoc('keydown', { key: ' ', code: 'Space', ctrlKey: true });
   assert.ok(panel.classList.contains('locked'), 'overlay should be locked');
 }
 

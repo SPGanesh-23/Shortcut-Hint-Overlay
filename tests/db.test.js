@@ -56,6 +56,12 @@ test('regression: shortcuts restored in v0.1.1 are still present', () => {
   const youtube = entries(db['youtube.com']).map((s) => s.keys);
   assert.ok(youtube.includes('K / Space'), 'YouTube K should be "K / Space"');
   assert.ok(youtube.includes('Shift + N'), 'YouTube is missing Shift + N');
+  // v0.1.10: YouTube Studio is a different app from YouTube, so it has
+  // its own entry instead of borrowing YouTube's shortcuts.
+  assert.ok('studio.youtube.com' in db, 'studio.youtube.com entry should exist');
+  const studio = entries(db['studio.youtube.com']).map((s) => s.keys);
+  assert.ok(studio.includes('K / Space'), 'Studio is missing K / Space');
+  assert.ok(studio.includes('Shift + N'), 'Studio is missing Shift + N');
   assert.ok(!('en.wikipedia.org' in db), 'en.wikipedia.org duplicate should not exist');
   // v0.1.1 restored these 5; v0.1.7 added 5 more, so assert presence, not count.
   const wiki = entries(db['wikipedia.org']).map((s) => s.keys);

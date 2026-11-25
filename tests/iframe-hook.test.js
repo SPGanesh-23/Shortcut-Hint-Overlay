@@ -108,22 +108,26 @@ docEl.appendChild(makeFrameEl(editorWin));
 
 eval(src);
 
-test('Ctrl hold inside the editor iframe present at load opens the overlay', async () => {
+test('Ctrl hold inside the editor iframe present at load opens the overlay on release', async () => {
   await sleep(20); // let the DB load via the worker path
   editorWin.fire('keydown', { key: 'Control', code: 'ControlLeft', repeat: false, ctrlKey: true });
   await sleep(650); // long-press is 500 ms
-  const panel = panelOfHost();
+  let panel = panelOfHost();
+  assert.ok(!panel || !panel.classList.contains('visible'), 'nothing must appear while Ctrl is still held');
+  editorWin.fire('keyup', { key: 'Control' });
+  await sleep(50);
+  panel = panelOfHost();
   assert.ok(panel, 'host element should be created by a Ctrl hold inside the iframe');
-  assert.ok(panel.classList.contains('visible'), 'panel should be visible');
+  assert.ok(panel.classList.contains('visible'), 'panel should be visible after release');
   const rows = panel.querySelectorAll('.shortcut-row');
   assert.ok(rows.some((r) => r.textContent.includes('Bold text')), 'Docs shortcuts should be shown');
 });
 
-test('Ctrl release inside the iframe hides the overlay again', async () => {
-  editorWin.fire('keyup', { key: 'Control' });
+test('Esc closes the overlay opened by a release inside the iframe', async () => {
+  fireDoc('keydown', { key: 'Escape', code: 'Escape' });
   await sleep(50);
   const panel = panelOfHost();
-  assert.ok(panel && !panel.classList.contains('visible'), 'panel should hide on Ctrl release inside the iframe');
+  assert.ok(panel && !panel.classList.contains('visible'), 'panel should hide on Esc');
 });
 
 test('an iframe added later (Slides case) gets hooked by the observer', async () => {
@@ -133,9 +137,11 @@ test('an iframe added later (Slides case) gets hooked by the observer', async ()
   fireObservers([{ addedNodes: [slidesFrame] }]);
   slidesWin.fire('keydown', { key: 'Control', code: 'ControlLeft', repeat: false, ctrlKey: true });
   await sleep(650);
+  slidesWin.fire('keyup', { key: 'Control' });
+  await sleep(50);
   const panel = panelOfHost();
   assert.ok(panel && panel.classList.contains('visible'), 'panel should open from a Ctrl hold in the dynamically added iframe');
-  slidesWin.fire('keyup', { key: 'Control' });
+  fireDoc('keydown', { key: 'Escape', code: 'Escape' });
   await sleep(50);
 });
 
@@ -147,15 +153,15 @@ test('a cross-origin iframe is skipped without breaking the top frame', async ()
   // The top frame must still work afterwards.
   fireDoc('keydown', { key: 'Control', code: 'ControlLeft', repeat: false, ctrlKey: true });
   await sleep(650);
+  fireDoc('keyup', { key: 'Control' });
+  await sleep(50);
   const panel = panelOfHost();
   assert.ok(panel && panel.classList.contains('visible'), 'top-frame Ctrl hold should still open the overlay');
 });
 
 test('a click inside a hooked iframe closes a locked overlay', async () => {
-  // Overlay is visible from the previous test; lock it with Ctrl+Space.
-  fireDoc('keydown', { key: ' ', code: 'Space', ctrlKey: true });
-  await sleep(50);
-  // Releasing Ctrl must NOT hide it while locked.
+  // Overlay is locked from the previous test (the release trigger opens
+  // it locked), so it must survive a Ctrl release and close on the click.
   fireDoc('keyup', { key: 'Control' });
   await sleep(50);
   let panel = panelOfHost();
