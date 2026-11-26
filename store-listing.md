@@ -13,19 +13,22 @@ lives at `PRIVACY.md` in this repo; paste its GitHub URL as the policy link:
 > **Shortcut Hint Overlay** shows you the keyboard shortcuts for the website
 > you're on — without leaving the page.
 >
-> Hold **Ctrl** for half a second and a clean overlay appears with that
-> site's shortcuts, plus the standard Chrome ones. Press **Ctrl + Space**
-> (or click the overlay) to lock it open, then press **/** to search it —
-> type `tab` and it finds `Ctrl + Tab`. Arrow keys walk through the list,
-> and every row is screen-reader friendly.
+> Hold **Ctrl** for half a second, then let go, and a clean overlay opens
+> with that site's shortcuts, plus the standard Chrome ones. It stays open
+> until you press **Esc**, click outside it, or press **Ctrl + Space**.
+> Press **/** to search it — type `tab` and it finds `Ctrl + Tab`. Arrow
+> keys walk through the list, and every row is screen-reader friendly.
+> Prefer the old hold-to-peek? Options → Trigger mode → **Peek** shows the
+> overlay while you hold Ctrl and hides it when you let go (Ctrl + Space
+> locks it).
 >
-> - Curated shortcuts for 105 sites — GitHub, YouTube, Gmail, Google Docs,
+> - Curated shortcuts for 107 sites — GitHub, YouTube, Gmail, Google Docs,
 >   Notion, Figma, Slack, Reddit, and more — plus automatic detection of
 >   shortcuts built into any page.
 > - Toolbar popup with the current site's shortcuts and a per-site
 >   on/off toggle.
-> - Options page: long-press duration, trigger key, lock combo, position,
->   light/dark theme, and a disabled-sites list.
+> - Options page: trigger mode, long-press duration, trigger key, lock combo,
+>   position, light/dark theme, and a disabled-sites list.
 > - Private by design: no accounts, no tracking, no data leaves your
 >   computer. Settings are stored only in Chrome's own sync storage.
 >
